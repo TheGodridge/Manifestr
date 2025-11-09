@@ -1,7 +1,7 @@
 import { MusicPack } from "@shared/schema";
 
 // Import MP3 files using @assets alias
-import deepSpaceUrl from "@assets/Deep Space 10 Hertz_1762708798127.mp3";
+import deepSpaceUrl from "@assets/Deep Space 10 Hertz_1762712194486.mp3";
 import cosmosUrl from "@assets/Cosmos _1762708798127.mp3";
 import forestSonnetUrl from "@assets/Sonnet of the Forest _1762708798127.mp3";
 import prairieWhispersUrl from "@assets/Whispers of the Prairie _1762708798127.mp3";
