@@ -28,12 +28,19 @@ Preferred communication style: Simple, everyday language.
 
 **UI Components**: shadcn/ui component library built on Radix UI primitives with Tailwind CSS for styling
 
+**Custom Components**:
+- `AnimatedCounter`: Smooth counter transitions with coin-drop animation on deposits
+- `FocusMultiplierBar`: Progress bar with milestone markers, color shifts (purple → gold), and glow intensity based on multiplier level
+- `FireChip`: Streak display with flame icon and pulse animation
+- `DepositModal`: Confirmation dialog for banking earnings
+
 **Design System**:
-- Custom cosmic/ambient color palette (Night Sky, Aurora Purple, Gold Primary, etc.)
+- Custom cosmic/ambient color palette (Night Sky #0A0D2A, Aurora Purple #3B0A66, Gold #F8D94E)
 - Four theme variations: Galaxy (default), Ocean, Neon Glow, Minimal
 - Typography using Inter/Poppins fonts
 - Spacing based on Tailwind scale (2, 3, 5, 8, 12, 16, 20, 32, 48)
-- Custom animations including particle fields and counter tweening
+- Custom animations: gradient drift background (15s cycle), shimmer sweep, coin-drop bounce, micro-interactions on buttons
+- All animations respect `prefers-reduced-motion` user preference
 
 ### Backend Architecture
 
@@ -80,10 +87,17 @@ Preferred communication style: Simple, everyday language.
 ### Core Features
 
 **Focus Timer**: 
-- Earns virtual currency at 1 cent per second (`EARN_RATE_CENTS_PER_SEC`)
+- **Exponential Earnings Growth**: Base rate of 5 cents per second (`EARN_RATE_CENTS_PER_SEC = 5`) multiplied by exponential growth factor
+- **Multiplier Formula**: `Math.pow(1.02, seconds / 30)` capped at 4x maximum
+  - Starts at 1x (5¢/sec)
+  - Reaches ~1.14x at 5 minutes (5.7¢/sec)
+  - Reaches ~1.31x at 10 minutes (6.55¢/sec)
+  - Caps at 4x around 20 minutes (20¢/sec)
+- **Fractional Cents Tracking**: Uses ref-based accumulator to prevent rounding errors, resets on deposit
+- **Focus Multiplier Progress Bar**: Visual indicator showing current multiplier (1x → 4x) with milestone markers at 2x and 3x
 - Session states: idle, running, paused, depositing
 - Real-time counter with animated transitions
-- Auto-pause detection and manual controls
+- Context-aware main button: "Manifest" when idle, "Deposit" during sessions
 
 **Quote Rotation**: 
 - Array of starter affirmations
