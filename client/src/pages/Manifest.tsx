@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { DepositModal } from "@/components/DepositModal";
+import { FireChip } from "@/components/FireChip";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { EARN_RATE_CENTS_PER_SEC, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
 import { Headphones, DollarSign, TrendingUp, Star } from "lucide-react";
@@ -93,13 +94,55 @@ export default function Manifest() {
   const confirmDeposit = () => {
     const depositAmount = sessionCents;
     const durationSec = focusedSeconds;
+    const now = Date.now();
+    
+    // Calculate streak
+    const todayStart = new Date(now).setHours(0, 0, 0, 0);
+    const lastDepositStart = appState.lastDepositDate ? new Date(appState.lastDepositDate).setHours(0, 0, 0, 0) : null;
+    
+    let newStreak = appState.currentStreak;
+    let isNewDay = false;
+    
+    if (!lastDepositStart) {
+      // First ever deposit
+      newStreak = 1;
+      isNewDay = true;
+    } else {
+      const daysDiff = Math.floor((todayStart - lastDepositStart) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff === 0) {
+        // Same day - maintain streak
+        newStreak = appState.currentStreak;
+      } else if (daysDiff === 1) {
+        // Next day - increment streak
+        newStreak = appState.currentStreak + 1;
+        isNewDay = true;
+      } else {
+        // Missed days - reset streak
+        newStreak = 1;
+        isNewDay = true;
+      }
+    }
+    
+    const newLongestStreak = Math.max(newStreak, appState.longestStreak);
+    
+    // Calculate overnight compound interest (only for consecutive days)
+    let compoundBonus = 0;
+    if (lastDepositStart) {
+      const daysDiff = Math.floor((todayStart - lastDepositStart) / (1000 * 60 * 60 * 24));
+      // Award compound interest only if exactly 1 day passed (consecutive streak)
+      if (daysDiff === 1 && appState.currentStreak > 0) {
+        // 1% compound interest per day of previous streak
+        compoundBonus = Math.floor(appState.bankTotalCents * 0.01 * appState.currentStreak);
+      }
+    }
     
     const newHistory: DepositHistory = {
-      id: `hx_${Date.now()}`,
+      id: `hx_${now}`,
       amountCents: depositAmount,
       durationSec,
       label: getSessionLabel(),
-      timestamp: Date.now(),
+      timestamp: now,
     };
 
     // Trigger deposit animation
@@ -109,14 +152,33 @@ export default function Manifest() {
     setTimeout(() => {
       setAppState({
         ...appState,
-        bankTotalCents: appState.bankTotalCents + depositAmount,
+        bankTotalCents: appState.bankTotalCents + depositAmount + compoundBonus,
         history: [newHistory, ...appState.history],
+        currentStreak: newStreak,
+        longestStreak: newLongestStreak,
+        lastDepositDate: now,
       });
+
+      let toastDescription = `Your future self says thanks.`;
+      if (compoundBonus > 0) {
+        toastDescription = `Night bonus: +$${(compoundBonus / 100).toFixed(2)} from ${appState.currentStreak}-day streak!`;
+      }
 
       toast({
         title: `Banked ${formatDuration(durationSec)} of focus`,
-        description: `Your future self says thanks.`,
+        description: toastDescription,
       });
+
+      // 7-day milestone celebration
+      if (newStreak === 7) {
+        setTimeout(() => {
+          toast({
+            title: "🔥 7-Day Streak!",
+            description: "A week of focus. You're building something real.",
+            duration: 5000,
+          });
+        }, 1000);
+      }
 
       // Reset session
       setSessionCents(0);
@@ -178,6 +240,11 @@ export default function Manifest() {
 
       {/* Center Section - Counter */}
       <div className="flex-1 flex flex-col items-center justify-center px-5 space-y-2">
+        {/* Streak Display */}
+        <div className="mb-4">
+          <FireChip streak={appState.currentStreak} />
+        </div>
+
         <div className="relative">
           {/* Radial glow effect */}
           <div

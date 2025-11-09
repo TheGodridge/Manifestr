@@ -36,6 +36,9 @@ export const appStateSchema = z.object({
   history: z.array(depositHistorySchema),
   preferences: preferencesSchema,
   favorites: z.array(z.string()),
+  currentStreak: z.number().int().min(0),
+  longestStreak: z.number().int().min(0),
+  lastDepositDate: z.number().nullable(),
 });
 
 export type AppState = z.infer<typeof appStateSchema>;
@@ -57,6 +60,9 @@ export const DEFAULT_APP_STATE: AppState = {
   history: [],
   preferences: DEFAULT_PREFERENCES,
   favorites: [],
+  currentStreak: 0,
+  longestStreak: 0,
+  lastDepositDate: null,
 };
 
 // Starter affirmations
