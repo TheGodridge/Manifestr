@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -25,13 +27,14 @@ import {
 import { useAppState } from "@/hooks/useLocalStorage";
 import { DEFAULT_APP_STATE, Theme, MusicPack } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Star, X, Plus } from "lucide-react";
 import { audioService } from "@/lib/audioService";
 
 export default function Settings() {
   const [, setLocation] = useLocation();
   const [appState, setAppState] = useAppState();
   const { toast } = useToast();
+  const [newQuote, setNewQuote] = useState("");
 
   const handleThemeChange = (theme: Theme) => {
     setAppState({
@@ -97,6 +100,41 @@ export default function Settings() {
     toast({
       title: "Bank reset complete",
       description: "All your data has been cleared. Time to start fresh.",
+    });
+  };
+
+  const handleAddCustomQuote = () => {
+    if (newQuote.trim().length < 3) {
+      toast({
+        title: "Quote too short",
+        description: "Please enter at least 3 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setAppState({
+      ...appState,
+      customQuotes: [...appState.customQuotes, newQuote.trim()],
+    });
+    setNewQuote("");
+    toast({
+      title: "Quote added",
+      description: "Your custom affirmation is now in rotation.",
+    });
+  };
+
+  const handleRemoveCustomQuote = (index: number) => {
+    setAppState({
+      ...appState,
+      customQuotes: appState.customQuotes.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleRemoveFavorite = (quote: string) => {
+    setAppState({
+      ...appState,
+      favorites: appState.favorites.filter((q) => q !== quote),
     });
   };
 
@@ -261,6 +299,100 @@ export default function Settings() {
                   data-testid="switch-auto-deposit"
                 />
               </div>
+            </div>
+          </Card>
+
+          {/* Favorites & Custom Quotes */}
+          <Card className="bg-aurora-purple/20 border-pulse-purple/30 rounded-xl p-6">
+            <h2 className="text-xl font-poppins font-semibold text-gold-primary mb-4">
+              Favorites & Custom Quotes
+            </h2>
+
+            {/* Favorite Quotes List */}
+            {appState.favorites.length > 0 && (
+              <div className="mb-6">
+                <Label className="text-mist-lavender mb-3 block">
+                  Favorited Quotes ({appState.favorites.length})
+                </Label>
+                <div className="space-y-2">
+                  {appState.favorites.map((quote, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-2 bg-night-sky/50 border border-pulse-purple/20 rounded-lg p-3"
+                      data-testid={`favorite-quote-${index}`}
+                    >
+                      <Star className="w-4 h-4 text-gold-primary fill-gold-primary flex-shrink-0 mt-0.5" />
+                      <p className="text-mist-lavender text-sm flex-1">{quote}</p>
+                      <button
+                        onClick={() => handleRemoveFavorite(quote)}
+                        className="p-1 hover-elevate active-elevate-2 rounded"
+                        data-testid={`button-unfavorite-${index}`}
+                      >
+                        <X className="w-4 h-4 text-mist-lavender/70" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Custom Quotes List */}
+            {appState.customQuotes.length > 0 && (
+              <div className="mb-6">
+                <Label className="text-mist-lavender mb-3 block">
+                  Custom Quotes ({appState.customQuotes.length})
+                </Label>
+                <div className="space-y-2">
+                  {appState.customQuotes.map((quote, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-2 bg-night-sky/50 border border-pulse-purple/20 rounded-lg p-3"
+                      data-testid={`custom-quote-${index}`}
+                    >
+                      <p className="text-mist-lavender text-sm flex-1">{quote}</p>
+                      <button
+                        onClick={() => handleRemoveCustomQuote(index)}
+                        className="p-1 hover-elevate active-elevate-2 rounded"
+                        data-testid={`button-remove-custom-${index}`}
+                      >
+                        <X className="w-4 h-4 text-mist-lavender/70" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Add Custom Quote */}
+            <div className="space-y-3">
+              <Label htmlFor="new-quote" className="text-mist-lavender">
+                Add Custom Affirmation
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="new-quote"
+                  value={newQuote}
+                  onChange={(e) => setNewQuote(e.target.value)}
+                  placeholder="I create my own reality..."
+                  className="bg-night-sky border-pulse-purple/30 text-gold-soft placeholder:text-mist-lavender/40"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddCustomQuote();
+                    }
+                  }}
+                  data-testid="input-custom-quote"
+                />
+                <Button
+                  onClick={handleAddCustomQuote}
+                  className="bg-gold-primary text-night-sky hover:bg-gold-soft flex-shrink-0"
+                  data-testid="button-add-custom-quote"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-mist-lavender/70 text-sm">
+                Create your own affirmations for the rotation
+              </p>
             </div>
           </Card>
 

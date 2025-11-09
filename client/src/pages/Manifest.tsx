@@ -26,24 +26,29 @@ export default function Manifest() {
   const timerRef = useRef<NodeJS.Timeout>();
   const quoteTimerRef = useRef<NodeJS.Timeout>();
 
+  // Combined quotes: custom + starter
+  const allQuotes = [...appState.customQuotes, ...STARTER_QUOTES];
+
   // Quote rotation
   useEffect(() => {
     const rotateQuote = () => {
-      setCurrentQuoteIndex((prev) => (prev + 1) % STARTER_QUOTES.length);
+      setCurrentQuoteIndex((prev) => (prev + 1) % allQuotes.length);
     };
 
     if (quoteTimerRef.current) {
       clearInterval(quoteTimerRef.current);
     }
 
-    quoteTimerRef.current = setInterval(rotateQuote, appState.preferences.quoteIntervalSec * 1000);
+    if (allQuotes.length > 0) {
+      quoteTimerRef.current = setInterval(rotateQuote, appState.preferences.quoteIntervalSec * 1000);
+    }
 
     return () => {
       if (quoteTimerRef.current) {
         clearInterval(quoteTimerRef.current);
       }
     };
-  }, [appState.preferences.quoteIntervalSec]);
+  }, [appState.preferences.quoteIntervalSec, allQuotes.length]);
 
   // Session counter
   useEffect(() => {
@@ -197,7 +202,7 @@ export default function Manifest() {
   };
 
   const toggleFavorite = () => {
-    const currentQuote = STARTER_QUOTES[currentQuoteIndex];
+    const currentQuote = allQuotes[currentQuoteIndex];
     const isFavorited = appState.favorites.includes(currentQuote);
     
     if (isFavorited) {
@@ -213,7 +218,7 @@ export default function Manifest() {
     }
   };
 
-  const isFavorited = appState.favorites.includes(STARTER_QUOTES[currentQuoteIndex]);
+  const isFavorited = appState.favorites.includes(allQuotes[currentQuoteIndex]);
 
   return (
     <div className="relative h-screen overflow-hidden flex flex-col">
@@ -224,7 +229,7 @@ export default function Manifest() {
             className="text-center text-mist-lavender text-lg sm:text-xl font-inter font-medium leading-relaxed min-h-[4rem] flex items-center justify-center px-8"
             data-testid="affirmation-text"
           >
-            {STARTER_QUOTES[currentQuoteIndex]}
+            {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
           </p>
           <button
             onClick={toggleFavorite}

@@ -9,7 +9,9 @@ export function useAppState() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        return appStateSchema.parse(parsed);
+        // Merge with default state for missing fields (backward compatibility)
+        const merged = { ...DEFAULT_APP_STATE, ...parsed };
+        return appStateSchema.parse(merged);
       }
     } catch (error) {
       console.error("Failed to load app state:", error);
