@@ -11,7 +11,18 @@ export default {
         sm: ".1875rem", /* 3px */
       },
       colors: {
-        // Manifestr Cosmic Palette
+        // Theme-responsive semantic tokens
+        "theme-accent": "hsl(var(--color-accent) / <alpha-value>)",
+        "theme-cta": "hsl(var(--color-cta) / <alpha-value>)",
+        "theme-cta-hover": "hsl(var(--color-cta-hover) / <alpha-value>)",
+        "theme-cta-text": "hsl(var(--color-cta-text) / <alpha-value>)",
+        "theme-text-secondary": "hsl(var(--color-text-secondary) / <alpha-value>)",
+        "theme-separator": "hsl(var(--color-separator) / <alpha-value>)",
+        "theme-nav-bg": "hsl(var(--color-nav-bg) / <alpha-value>)",
+        "theme-nav-text": "hsl(var(--color-nav-text) / <alpha-value>)",
+        "theme-glow": "hsl(var(--color-glow) / <alpha-value>)",
+        
+        // Manifestr Cosmic Palette (legacy - for reference)
         "night-sky": "#0A0D2A",
         "night-sky-deep": "#1A1E3E",
         "aurora-purple": "#3B0A66",
@@ -21,16 +32,16 @@ export default {
         "gold-pressed": "#E0C546",
         "mist-lavender": "#C7BAF0",
         
-        // Ocean theme
+        // Ocean theme (legacy)
         "ocean-deep": "#06182E",
         "ocean-mid": "#0B2C3A",
         "ocean-teal": "#00B3B3",
         
-        // Neon Glow theme
+        // Neon Glow theme (legacy)
         "neon-dark": "#2A0A26",
         "neon-magenta": "#FF3BCD",
         
-        // Minimal theme
+        // Minimal theme (legacy)
         "minimal-black": "#0B0B0F",
         
         // Flat / base colors (regular buttons)

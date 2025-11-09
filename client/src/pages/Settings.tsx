@@ -37,6 +37,9 @@ export default function Settings() {
   const [newQuote, setNewQuote] = useState("");
 
   const handleThemeChange = (theme: Theme) => {
+    // Immediately update DOM attribute for instant theme application
+    document.documentElement.dataset.theme = theme;
+    
     setAppState({
       ...appState,
       preferences: {

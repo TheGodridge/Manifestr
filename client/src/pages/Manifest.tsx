@@ -330,7 +330,7 @@ export default function Manifest() {
       <div className="flex-1 flex flex-col items-center justify-center px-5">
         {/* Affirmation */}
         <p 
-          className="text-center text-mist-lavender text-lg sm:text-xl font-inter font-medium leading-relaxed mb-8 max-w-2xl"
+          className="text-center text-theme-text-secondary text-lg sm:text-xl font-inter font-medium leading-relaxed mb-8 max-w-2xl"
           data-testid="affirmation-text"
         >
           {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
@@ -338,7 +338,7 @@ export default function Manifest() {
 
         {/* Separator */}
         <div className="w-full max-w-2xl mb-8 flex items-center justify-center">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-pulse-purple/40 to-transparent" />
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-theme-separator/40 to-transparent" />
         </div>
 
         {/* Counter - Centered in fixed-width container */}
@@ -347,7 +347,7 @@ export default function Manifest() {
           <div
             className="absolute inset-0 blur-3xl opacity-30"
             style={{
-              background: "radial-gradient(circle at center, rgba(59, 10, 102, 0.6) 0%, transparent 70%)",
+              background: "radial-gradient(circle at center, hsl(var(--color-glow) / 0.6) 0%, transparent 70%)",
             }}
           />
           
@@ -365,16 +365,16 @@ export default function Manifest() {
           </div>
         )}
         
-        <p className="text-mist-lavender text-sm sm:text-base font-inter mb-8" data-testid="subtext">
+        <p className="text-theme-text-secondary text-sm sm:text-base font-inter mb-8" data-testid="subtext">
           Stay present — your energy compounds.
         </p>
 
         {/* Manifest/Deposit Button */}
         <Button
           onClick={sessionState === "running" ? handleDeposit : handlePlayPause}
-          className="micro-interact bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
+          className="micro-interact bg-theme-cta text-theme-cta-text hover:bg-theme-cta-hover h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
           style={{
-            boxShadow: "0 0 30px rgba(59, 10, 102, 0.3)",
+            boxShadow: "0 0 30px hsl(var(--color-glow) / 0.3)",
           }}
           data-testid={sessionState === "running" ? "button-deposit" : "button-manifest"}
         >
@@ -393,12 +393,12 @@ export default function Manifest() {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <div className="flex-none border-t border-pulse-purple/20 bg-night-sky/50 backdrop-blur-sm">
+      <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm">
         <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
           {/* Bank Button */}
           <Button
             onClick={() => setLocation("/bank")}
-            className="micro-interact bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
             data-testid="button-bank"
           >
             <TrendingUp className="w-5 h-5" />
@@ -408,7 +408,7 @@ export default function Manifest() {
           {/* Settings Button */}
           <Button
             onClick={() => setLocation("/settings")}
-            className="micro-interact bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
             data-testid="button-settings"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

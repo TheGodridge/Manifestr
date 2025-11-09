@@ -165,6 +165,59 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* THEME-SPECIFIC SEMANTIC TOKENS */
+/* Galaxy Theme (Default) */
+:root[data-theme="Galaxy"], :root:not([data-theme]) {
+  --color-accent: 269 85% 21%;          /* aurora-purple #3B0A66 */
+  --color-cta: 48 92% 64%;              /* gold-primary #F8D94E */
+  --color-cta-hover: 48 88% 58%;        /* gold-pressed #E0C546 */
+  --color-cta-text: 240 60% 10%;        /* night-sky #0A0D2A */
+  --color-text-secondary: 255 75% 85%;  /* mist-lavender #C7BAF0 */
+  --color-separator: 269 50% 38%;       /* pulse-purple #5C318F */
+  --color-nav-bg: 269 85% 21%;          /* aurora-purple #3B0A66 */
+  --color-nav-text: 48 92% 64%;         /* gold-primary #F8D94E */
+  --color-glow: 269 85% 21%;            /* aurora-purple #3B0A66 */
+}
+
+/* Ocean Theme */
+:root[data-theme="Ocean"] {
+  --color-accent: 193 90% 14%;          /* ocean-mid #0B2C3A */
+  --color-cta: 180 100% 35%;            /* ocean-teal #00B3B3 */
+  --color-cta-hover: 180 100% 30%;      /* darker teal */
+  --color-cta-text: 204 75% 11%;        /* ocean-deep #06182E */
+  --color-text-secondary: 180 40% 68%;  /* lighter teal #90C9C9 */
+  --color-separator: 180 100% 35%;      /* ocean-teal #00B3B3 */
+  --color-nav-bg: 193 90% 14%;          /* ocean-mid #0B2C3A */
+  --color-nav-text: 180 100% 35%;       /* ocean-teal #00B3B3 */
+  --color-glow: 180 100% 35%;           /* ocean-teal #00B3B3 */
+}
+
+/* Neon Glow Theme */
+:root[data-theme="Neon Glow"] {
+  --color-accent: 304 75% 15%;          /* neon-dark #2A0A26 */
+  --color-cta: 320 100% 62%;            /* neon-magenta #FF3BCD */
+  --color-cta-hover: 320 100% 55%;      /* darker magenta */
+  --color-cta-text: 304 75% 15%;        /* neon-dark #2A0A26 */
+  --color-text-secondary: 320 100% 85%; /* lighter magenta #FFB3E6 */
+  --color-separator: 320 100% 62%;      /* neon-magenta #FF3BCD */
+  --color-nav-bg: 304 75% 15%;          /* neon-dark #2A0A26 */
+  --color-nav-text: 320 100% 62%;       /* neon-magenta #FF3BCD */
+  --color-glow: 320 100% 62%;           /* neon-magenta #FF3BCD */
+}
+
+/* Minimal Theme */
+:root[data-theme="Minimal"] {
+  --color-accent: 240 5% 18%;           /* dark gray #2A2A2E */
+  --color-cta: 0 0% 100%;               /* white #FFFFFF */
+  --color-cta-hover: 0 0% 90%;          /* off-white */
+  --color-cta-text: 240 23% 5%;         /* minimal-black #0B0B0F */
+  --color-text-secondary: 240 5% 70%;   /* light gray #AFAFB3 */
+  --color-separator: 240 5% 30%;        /* medium gray #4A4A4E */
+  --color-nav-bg: 240 10% 12%;          /* darker gray #1A1A1E */
+  --color-nav-text: 0 0% 100%;          /* white #FFFFFF */
+  --color-glow: 240 5% 30%;             /* medium gray #4A4A4E */
+}
+
 @layer base {
   * {
     @apply border-border;
