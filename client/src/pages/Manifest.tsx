@@ -336,37 +336,32 @@ export default function Manifest() {
           Stay present — your energy compounds.
         </p>
 
-        {/* Deposit Button */}
+        {/* Manifest/Deposit Button */}
         <Button
-          onClick={handleDeposit}
+          onClick={sessionState === "running" ? handleDeposit : handlePlayPause}
           className="micro-interact bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
           style={{
             boxShadow: "0 0 30px rgba(59, 10, 102, 0.3)",
           }}
-          data-testid="button-deposit"
+          data-testid={sessionState === "running" ? "button-deposit" : "button-manifest"}
         >
-          <DollarSign className="w-5 h-5" />
-          <span className="ml-2">Deposit</span>
+          {sessionState === "running" ? (
+            <>
+              <DollarSign className="w-5 h-5" />
+              <span className="ml-2">Deposit</span>
+            </>
+          ) : (
+            <>
+              <Headphones className="w-5 h-5" />
+              <span className="ml-2">Manifest</span>
+            </>
+          )}
         </Button>
       </div>
 
       {/* Bottom Navigation Bar */}
       <div className="flex-none border-t border-pulse-purple/20 bg-night-sky/50 backdrop-blur-sm">
         <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
-          {/* Play/Pause Button */}
-          <Button
-            onClick={handlePlayPause}
-            className={`micro-interact bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] px-6 rounded-xl transition-all ${
-              sessionState === "running" ? "ring-2 ring-gold-primary/30" : ""
-            }`}
-            data-testid="button-play-pause"
-          >
-            <Headphones className={`w-5 h-5 ${sessionState === "running" ? "animate-pulse" : ""}`} />
-            <span className="ml-2">
-              {sessionState === "running" ? "Pause" : sessionState === "paused" ? "Resume" : "Play"}
-            </span>
-          </Button>
-
           {/* Bank Button */}
           <Button
             onClick={() => setLocation("/bank")}
