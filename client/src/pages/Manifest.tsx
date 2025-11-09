@@ -68,7 +68,7 @@ export default function Manifest() {
     if (sessionState === "idle" || sessionState === "paused") {
       setSessionState("running");
       if (sessionState === "idle") {
-        audioService.play(appState.preferences.music);
+        audioService.play(appState.preferences.music, appState.preferences.volume);
       } else {
         audioService.resume();
       }

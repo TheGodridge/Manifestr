@@ -25,6 +25,7 @@ export const preferencesSchema = z.object({
   music: musicPackSchema,
   quoteIntervalSec: z.number().int().positive(),
   autoDepositOnExit: z.boolean(),
+  volume: z.number().min(0).max(100),
 });
 
 export type Preferences = z.infer<typeof preferencesSchema>;
@@ -48,6 +49,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   music: "LoFi",
   quoteIntervalSec: 15,
   autoDepositOnExit: false,
+  volume: 50,
 };
 
 export const DEFAULT_APP_STATE: AppState = {

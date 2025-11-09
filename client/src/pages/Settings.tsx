@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,11 +46,6 @@ export default function Settings() {
   const handleMusicChange = (music: MusicPack) => {
     const wasPlaying = audioService.getIsPlaying();
     
-    // Stop current audio
-    if (wasPlaying) {
-      audioService.stop();
-    }
-    
     setAppState({
       ...appState,
       preferences: {
@@ -58,10 +54,22 @@ export default function Settings() {
       },
     });
     
-    // Resume with new music if it was playing
+    // If audio is playing, switch to new pack (will trigger crossfade)
     if (wasPlaying) {
-      audioService.play(music);
+      audioService.play(music, appState.preferences.volume);
     }
+  };
+
+  const handleVolumeChange = (value: number[]) => {
+    const volume = value[0];
+    setAppState({
+      ...appState,
+      preferences: {
+        ...appState.preferences,
+        volume,
+      },
+    });
+    audioService.setVolume(volume);
   };
 
   const handleQuoteSpeedChange = (speed: string) => {
@@ -169,6 +177,30 @@ export default function Settings() {
                   <SelectItem value="Waves" className="text-gold-soft">Rain + Waves</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-3 mt-6">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="volume-slider" className="text-mist-lavender">
+                  Volume
+                </Label>
+                <span className="text-gold-soft font-mono text-sm">
+                  {appState.preferences.volume}%
+                </span>
+              </div>
+              <Slider
+                id="volume-slider"
+                min={0}
+                max={100}
+                step={1}
+                value={[appState.preferences.volume]}
+                onValueChange={handleVolumeChange}
+                className="cursor-pointer"
+                data-testid="slider-volume"
+              />
+              <p className="text-mist-lavender/70 text-sm">
+                Adjust ambient audio level
+              </p>
             </div>
           </Card>
 
