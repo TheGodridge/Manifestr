@@ -95,13 +95,21 @@ Preferred communication style: Simple, everyday language.
 
 ### Audio System
 
-**Implementation**: Web Audio API service (`audioService.ts`) with sophisticated meditation soundscapes
-- **Theta Waves**: Binaural beats (200Hz left ear, 206Hz right ear) creating 6Hz theta wave difference for deep meditation
-- **Ocean Meditation**: Enhanced pink noise with slow wave-like modulation (0.2Hz) mimicking natural ocean rhythms
-- **Forest Ambience**: Layered soundscape with low-frequency drone (110Hz filtered sawtooth for wind), wind modulation (0.3Hz), and high-frequency white noise for rustling leaves
-- Volume control (0-100%) with smooth transitions
-- Crossfade between music packs for seamless switching
-- AudioContext management with proper initialization and state handling
+**Implementation**: Web Audio API service (`audioService.ts`) with file-based MP3 meditation soundscapes
+- **Music Tracks** (4 professional meditation soundscapes):
+  - **Deep Space 10Hz** (default): Deep theta wave meditation for profound relaxation (18MB)
+  - **Cosmos**: Celestial soundscapes for cosmic awareness (18MB)
+  - **Sonnet of the Forest**: Natural forest ambience for grounding (12MB)
+  - **Whispers of the Prairie**: Gentle prairie winds for peaceful meditation (6.5MB)
+- **Playback Architecture**:
+  - AudioBuffer-based playback with caching for instant track switching
+  - Hybrid preload strategy: first track loads on play, remaining tracks preload in background using requestIdleCallback
+  - Settings page triggers preloadAll() as safeguard for smooth music switching
+  - Track files imported from `attached_assets/` via @assets alias
+- **Crossfading**: Dual GainNode approach with 750ms smooth transitions between tracks
+- **Volume Control**: Master GainNode (0-100%) with smooth ramping transitions
+- **Migration**: Backward compatibility logic maps old procedural pack names to new MP3 tracks
+- AudioContext management with proper initialization, suspend/resume, and cleanup
 
 ### Core Features
 
@@ -142,10 +150,12 @@ Preferred communication style: Simple, everyday language.
 **Settings**:
 - Theme selection (4 options: Galaxy, Ocean, Neon Glow, Minimal)
 - Difficulty slider (Novice → Intermediate → Advanced → Expert) with visual feedback
-- Music pack selection (3 options: Theta Waves, Ocean Meditation, Forest Ambience)
+- Music pack selection (4 tracks with titles and descriptions):
+  - Deep Space 10Hz, Cosmos, Sonnet of the Forest, Whispers of the Prairie
 - Quote rotation interval configuration (10s, 15s, 30s)
 - Volume control slider (0-100%)
 - Auto-deposit on exit toggle
+- Custom quote management (add/remove)
 - Full app reset with confirmation dialog
 
 ### External Dependencies
