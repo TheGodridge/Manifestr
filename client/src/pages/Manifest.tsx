@@ -170,11 +170,14 @@ export default function Manifest() {
       timerRef.current = setInterval(() => {
         setFocusedSeconds((prev) => {
           const nextSeconds = prev + 1;
-          const multiplier = calculateMultiplier(nextSeconds);
           
           // Get difficulty config with safety check
           const focusLevel = appState.preferences.focusLevel || "Intermediate";
           const config = DIFFICULTY_CONFIGS[focusLevel];
+          
+          // Calculate multiplier inline to avoid dependency issues
+          const rawMultiplier = Math.pow(config.growthFactor, nextSeconds / config.growthIntervalSec);
+          const multiplier = Math.min(rawMultiplier, config.maxMultiplier);
           
           // Calculate exact earnings with fractional cents
           const exactEarnings = config.baseRateCentsPerSec * multiplier;
@@ -201,7 +204,7 @@ export default function Manifest() {
         clearInterval(timerRef.current);
       }
     };
-  }, [sessionState, calculateMultiplier]);
+  }, [sessionState, appState.preferences.focusLevel]);
 
   const handlePlayPause = () => {
     if (sessionState === "idle" || sessionState === "paused") {
@@ -226,7 +229,21 @@ export default function Manifest() {
       });
       return;
     }
+    // Pause session when opening deposit modal to freeze counter
+    if (sessionState === "running") {
+      setSessionState("paused");
+      audioService.pause();
+    }
     setShowDepositModal(true);
+  };
+  
+  const handleModalClose = (open: boolean) => {
+    setShowDepositModal(open);
+    // Resume session if user closes modal without depositing
+    if (!open && sessionState === "paused" && sessionCents > 0) {
+      setSessionState("running");
+      audioService.resume();
+    }
   };
 
   const confirmDeposit = () => {
@@ -441,7 +458,7 @@ export default function Manifest() {
 
       <DepositModal
         open={showDepositModal}
-        onOpenChange={setShowDepositModal}
+        onOpenChange={handleModalClose}
         amount={sessionCents}
         onConfirm={confirmDeposit}
       />
