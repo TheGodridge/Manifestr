@@ -26,12 +26,15 @@ function Router() {
 
 function App() {
   const [appState] = useAppState();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   // Sync data-theme attribute with user's theme preference BEFORE paint
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = appState.preferences.theme;
   }, [appState.preferences.theme]);
+
+  // Hide settings icon on Settings and Bank/History pages
+  const showSettingsIcon = location !== "/settings" && location !== "/bank";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -39,14 +42,16 @@ function App() {
         <ThemeBackground theme={appState.preferences.theme} />
         <ParticleField theme={appState.preferences.theme} />
         
-        {/* Settings Icon */}
-        <button
-          onClick={() => setLocation("/settings")}
-          className="fixed top-5 right-5 z-50 p-2 hover-elevate active-elevate-2 rounded-md transition-transform"
-          data-testid="button-settings"
-        >
-          <Settings className="w-6 h-6 text-theme-text-secondary hover:text-theme-cta transition-colors" />
-        </button>
+        {/* Settings Icon - Hidden on Settings and History pages */}
+        {showSettingsIcon && (
+          <button
+            onClick={() => setLocation("/settings")}
+            className="fixed top-5 right-5 z-50 p-2 hover-elevate active-elevate-2 rounded-md transition-transform"
+            data-testid="button-settings"
+          >
+            <Settings className="w-6 h-6 text-theme-text-secondary hover:text-theme-cta transition-colors" />
+          </button>
+        )}
 
         <div className="relative z-10">
           <Router />
