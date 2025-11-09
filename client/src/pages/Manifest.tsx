@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -29,8 +29,21 @@ export default function Manifest() {
   const quoteTimerRef = useRef<NodeJS.Timeout>();
   const fractionalCentsRef = useRef(0); // Track fractional cents for precision
 
-  // Combined quotes: custom + starter
-  const allQuotes = [...appState.customQuotes, ...STARTER_QUOTES];
+  // Shuffle array utility
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // Combined quotes: custom + starter, shuffled on every render
+  const allQuotes = useMemo(
+    () => shuffleArray([...appState.customQuotes, ...STARTER_QUOTES]),
+    [appState.customQuotes]
+  );
 
   // Calculate exponential multiplier based on session duration
   const calculateMultiplier = (seconds: number): number => {
@@ -365,9 +378,6 @@ export default function Manifest() {
           </div>
         )}
         
-        <p className="text-theme-text-secondary text-sm sm:text-base font-inter mb-8" data-testid="subtext">
-          Stay present — your energy compounds.
-        </p>
 
         {/* Manifest/Deposit Button */}
         <Button
