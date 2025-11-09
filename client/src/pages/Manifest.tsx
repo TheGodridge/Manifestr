@@ -310,6 +310,11 @@ export default function Manifest() {
           {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
         </p>
 
+        {/* Separator */}
+        <div className="w-full max-w-2xl mb-8 flex items-center justify-center">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-pulse-purple/40 to-transparent" />
+        </div>
+
         {/* Counter - Left-aligned to prevent shifting */}
         <div className="relative mb-6 w-full max-w-2xl">
           {/* Radial glow effect */}
