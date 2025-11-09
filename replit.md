@@ -75,8 +75,9 @@ Preferred communication style: Simple, everyday language.
 **Client-Side Storage**: localStorage for all user data persistence
 - Bank total (in cents)
 - Deposit history array
-- User preferences (theme, music, quote interval, auto-deposit setting)
+- User preferences (theme, music, quote interval, auto-deposit setting, volume, difficulty level)
 - Favorited quotes
+- Custom user-created quotes
 
 **Schema Validation**: Zod schemas define all data structures with TypeScript type inference
 
@@ -105,14 +106,17 @@ Preferred communication style: Simple, everyday language.
 ### Core Features
 
 **Focus Timer**: 
-- **Exponential Earnings Growth**: Base rate of 5 cents per second (`EARN_RATE_CENTS_PER_SEC = 5`) multiplied by exponential growth factor
-- **Multiplier Formula**: `Math.pow(1.02, seconds / 30)` capped at 4x maximum
-  - Starts at 1x (5¢/sec)
-  - Reaches ~1.14x at 5 minutes (5.7¢/sec)
-  - Reaches ~1.31x at 10 minutes (6.55¢/sec)
-  - Caps at 4x around 20 minutes (20¢/sec)
+- **Difficulty System**: Four levels (Novice, Intermediate, Advanced, Expert) that adjust earn rates and multiplier progression to encourage longer meditation sessions
+  - **Novice**: Fast progression for beginners (8¢/sec base, reaches 3x at 8 min)
+  - **Intermediate** (default): Balanced pace (5¢/sec base, reaches 2.5x at 10 min)
+  - **Advanced**: Slower, deeper practice (3¢/sec base, reaches 3.2x at 10.5 min)
+  - **Expert**: Most challenging mastery level (2¢/sec base, reaches 4x at 10 min)
+- **Exponential Earnings Growth**: Difficulty-specific base rate multiplied by exponential growth factor
+- **Multiplier Formula**: `Math.pow(growthFactor, seconds / growthIntervalSec)` capped at difficulty-specific maximum
+  - Growth factors mathematically calculated to hit target multipliers at specific durations
+  - Formula: `growthFactor = targetMultiplier^(growthInterval/targetSeconds)`
 - **Fractional Cents Tracking**: Uses ref-based accumulator to prevent rounding errors, resets on deposit
-- **Focus Multiplier Progress Bar**: Visual indicator showing current multiplier (1x → 4x) with milestone markers at 2x and 3x
+- **Focus Multiplier Progress Bar**: Visual indicator showing current multiplier progress toward difficulty-specific cap
 - Session states: idle, running, paused, depositing
 - Real-time counter with animated transitions
 - Context-aware main button: "Manifest" when idle, "Deposit" during sessions
@@ -136,9 +140,11 @@ Preferred communication style: Simple, everyday language.
 - Duration and amount per entry
 
 **Settings**:
-- Theme selection (4 options with live preview)
-- Music pack selection (3 options)
-- Quote rotation interval configuration
+- Theme selection (4 options: Galaxy, Ocean, Neon Glow, Minimal)
+- Difficulty slider (Novice → Intermediate → Advanced → Expert) with visual feedback
+- Music pack selection (3 options: Theta Waves, Ocean Meditation, Forest Ambience)
+- Quote rotation interval configuration (10s, 15s, 30s)
+- Volume control slider (0-100%)
 - Auto-deposit on exit toggle
 - Full app reset with confirmation dialog
 

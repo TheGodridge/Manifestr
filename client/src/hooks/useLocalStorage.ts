@@ -9,12 +9,21 @@ export function useAppState() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        // Merge with default state for missing fields (backward compatibility)
-        const merged = { ...DEFAULT_APP_STATE, ...parsed };
+        // Deep merge with default state for missing fields (backward compatibility)
+        const merged = {
+          ...DEFAULT_APP_STATE,
+          ...parsed,
+          preferences: {
+            ...DEFAULT_APP_STATE.preferences,
+            ...(parsed.preferences || {}),
+          },
+        };
         return appStateSchema.parse(merged);
       }
     } catch (error) {
       console.error("Failed to load app state:", error);
+      // Clear corrupted localStorage and start fresh
+      localStorage.removeItem(STORAGE_KEY);
     }
     return DEFAULT_APP_STATE;
   });

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -46,11 +46,11 @@ export default function Manifest() {
   );
 
   // Calculate exponential multiplier based on session duration and difficulty
-  const calculateMultiplier = (seconds: number): number => {
-    const config = DIFFICULTY_CONFIGS[appState.preferences.focusLevel];
+  const calculateMultiplier = useCallback((seconds: number): number => {
+    const config = DIFFICULTY_CONFIGS[appState.preferences.focusLevel || "Intermediate"];
     const rawMultiplier = Math.pow(config.growthFactor, seconds / config.growthIntervalSec);
     return Math.min(rawMultiplier, config.maxMultiplier);
-  };
+  }, [appState.preferences.focusLevel]);
 
   // Quote rotation
   useEffect(() => {
@@ -171,7 +171,10 @@ export default function Manifest() {
         setFocusedSeconds((prev) => {
           const nextSeconds = prev + 1;
           const multiplier = calculateMultiplier(nextSeconds);
-          const config = DIFFICULTY_CONFIGS[appState.preferences.focusLevel];
+          
+          // Get difficulty config with safety check
+          const focusLevel = appState.preferences.focusLevel || "Intermediate";
+          const config = DIFFICULTY_CONFIGS[focusLevel];
           
           // Calculate exact earnings with fractional cents
           const exactEarnings = config.baseRateCentsPerSec * multiplier;
@@ -198,7 +201,7 @@ export default function Manifest() {
         clearInterval(timerRef.current);
       }
     };
-  }, [sessionState]);
+  }, [sessionState, calculateMultiplier]);
 
   const handlePlayPause = () => {
     if (sessionState === "idle" || sessionState === "paused") {

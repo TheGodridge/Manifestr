@@ -179,10 +179,14 @@ export const STARTER_QUOTES = [
 ];
 
 // Difficulty configurations
-// Novice: Fast earnings, reaches max quickly (good for beginners)
-// Intermediate: Balanced progression
-// Advanced: Slower, encourages 10-minute sessions
-// Expert: Slowest, encourages 15-20 minute deep meditation sessions
+// Formulas calculated to hit specific multiplier targets at target durations:
+// multiplier = growthFactor^(seconds/growthInterval)
+// growthFactor = targetMultiplier^(growthInterval/targetSeconds)
+//
+// Novice: Fast earnings, reaches 3x at 8 minutes (480s) - beginner friendly
+// Intermediate: Balanced, reaches 2.5x at 10 minutes (600s) - default experience  
+// Advanced: Slower, reaches 3.2x at 10.5 minutes (630s) - deeper practice
+// Expert: Most challenging, reaches 4x at 10 minutes (600s) - mastery level
 export interface DifficultyConfig {
   baseRateCentsPerSec: number;  // Base earning rate
   growthFactor: number;          // Exponential growth factor
@@ -192,27 +196,27 @@ export interface DifficultyConfig {
 
 export const DIFFICULTY_CONFIGS: Record<FocusLevel, DifficultyConfig> = {
   "Novice": {
-    baseRateCentsPerSec: 8,      // $0.08/sec (fastest)
-    growthFactor: 1.025,         // 2.5% growth
-    growthIntervalSec: 20,       // Every 20 seconds
-    maxMultiplier: 2.5,          // Caps at 2.5x around 5 minutes
+    baseRateCentsPerSec: 8,      // $0.08/sec (fastest base rate)
+    growthFactor: 1.0717,        // Reaches 3x at 8 min: 3^(30/480) = 1.0717
+    growthIntervalSec: 30,       // Every 30 seconds
+    maxMultiplier: 3.0,          // Caps at 3x
   },
   "Intermediate": {
-    baseRateCentsPerSec: 5,      // $0.05/sec (current default)
-    growthFactor: 1.02,          // 2% growth
+    baseRateCentsPerSec: 5,      // $0.05/sec (balanced base rate)
+    growthFactor: 1.0469,        // Reaches 2.5x at 10 min: 2.5^(30/600) = 1.0469
     growthIntervalSec: 30,       // Every 30 seconds
-    maxMultiplier: 3.5,          // Caps at 3.5x around 10 minutes
+    maxMultiplier: 2.5,          // Caps at 2.5x
   },
   "Advanced": {
-    baseRateCentsPerSec: 3,      // $0.03/sec (slower)
-    growthFactor: 1.018,         // 1.8% growth
+    baseRateCentsPerSec: 3,      // $0.03/sec (slower base rate)
+    growthFactor: 1.0668,        // Reaches 3.2x at 10.5 min: 3.2^(35/630) = 1.0668
     growthIntervalSec: 35,       // Every 35 seconds
-    maxMultiplier: 4.5,          // Caps at 4.5x around 15 minutes
+    maxMultiplier: 3.2,          // Caps at 3.2x
   },
   "Expert": {
     baseRateCentsPerSec: 2,      // $0.02/sec (slowest, most challenging)
-    growthFactor: 1.015,         // 1.5% growth
+    growthFactor: 1.0970,        // Reaches 4x at 10 min: 4^(40/600) = 1.0970
     growthIntervalSec: 40,       // Every 40 seconds
-    maxMultiplier: 5.0,          // Caps at 5.0x around 20 minutes
+    maxMultiplier: 4.0,          // Caps at 4x
   },
 };
