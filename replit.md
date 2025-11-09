@@ -170,10 +170,20 @@ Preferred communication style: Simple, everyday language.
 
 **Navigation Structure**:
 - App title "Manifestr" displayed at top of Manifest page in CTA color with glow effect
+- Separator line below title creates visual frame
+- Quote section centered vertically between title separator and counter separator
+- Second separator line above counter area
 - Manifest page bottom nav: About | History | Settings
 - Bank page bottom nav: About | Manifest | Settings
 - Settings page: Back to Manifest button at top
 - Navigation buttons: 44px height, 12px gaps, centered layout
+
+**Layout Architecture**:
+- Title section (fixed): App name + separator line
+- Quote section (flex-1): Expandable centered space for affirmations
+- Counter separator (fixed): Visual boundary above counter
+- Counter section (fixed): Currency display, multiplier bar, and action button
+- Bottom navigation (fixed): Three-button layout
 
 ### External Dependencies
 

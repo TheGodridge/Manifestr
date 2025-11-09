@@ -361,9 +361,9 @@ export default function Manifest() {
       <ThemeBackground theme={appState.preferences.theme} />
       
       {/* App Title */}
-      <div className="flex-none pt-6 pb-2 flex justify-center">
+      <div className="flex-none pt-6 pb-3 flex flex-col items-center">
         <h1 
-          className="text-3xl font-bold tracking-wide text-theme-cta"
+          className="text-3xl font-bold tracking-wide text-theme-cta mb-3"
           style={{
             textShadow: "0 0 20px hsl(var(--color-glow) / 0.4)",
           }}
@@ -371,12 +371,16 @@ export default function Manifest() {
         >
           Manifestr
         </h1>
+        {/* Title separator line */}
+        <div className="w-full max-w-2xl flex items-center justify-center">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-theme-separator/40 to-transparent" />
+        </div>
       </div>
       
-      {/* Main Content - Centered */}
+      {/* Main Content - Quote centered between two lines */}
       <div className="flex-1 flex flex-col items-center justify-center px-5">
         {/* Affirmation - Responsive text that shrinks to fit */}
-        <div className="mb-6 max-w-2xl w-full px-4 min-h-[60px] flex items-center justify-center">
+        <div className="max-w-2xl w-full px-4 min-h-[60px] flex items-center justify-center">
           <p 
             className="text-center text-theme-text-secondary font-inter font-medium leading-relaxed"
             style={{
@@ -389,12 +393,17 @@ export default function Manifest() {
             {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
           </p>
         </div>
+      </div>
 
-        {/* Separator */}
-        <div className="w-full max-w-2xl mb-6 flex items-center justify-center">
+      {/* Bottom separator line */}
+      <div className="flex-none pb-6 flex justify-center">
+        <div className="w-full max-w-2xl flex items-center justify-center">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-theme-separator/40 to-transparent" />
         </div>
+      </div>
 
+      {/* Counter and Action Section */}
+      <div className="flex-none pb-8 flex flex-col items-center px-5">
         {/* Counter - Centered in fixed-width container */}
         <div className="relative mb-5 w-full max-w-2xl flex justify-center">
           {/* Radial glow effect */}
@@ -412,35 +421,35 @@ export default function Manifest() {
           />
         </div>
 
-        {/* Focus Multiplier Progress Bar */}
-        {sessionState === "running" && (
-          <div className="mb-5 w-full max-w-2xl">
-            <FocusMultiplierBar multiplier={currentMultiplier} />
-          </div>
-        )}
-        
-
-        {/* Manifest/Deposit Button */}
-        <Button
-          onClick={sessionState === "running" ? handleDeposit : handlePlayPause}
-          className="micro-interact bg-theme-cta text-theme-cta-text hover:bg-theme-cta-hover h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
-          style={{
-            boxShadow: "0 0 30px hsl(var(--color-glow) / 0.3)",
-          }}
-          data-testid={sessionState === "running" ? "button-deposit" : "button-manifest"}
-        >
-          {sessionState === "running" ? (
-            <>
-              <DollarSign className="w-5 h-5" />
-              <span className="ml-2">Deposit</span>
-            </>
-          ) : (
-            <>
-              <Headphones className="w-5 h-5" />
-              <span className="ml-2">Manifest</span>
-            </>
+          {/* Focus Multiplier Progress Bar */}
+          {sessionState === "running" && (
+            <div className="mb-5 w-full max-w-2xl">
+              <FocusMultiplierBar multiplier={currentMultiplier} />
+            </div>
           )}
-        </Button>
+          
+
+          {/* Manifest/Deposit Button */}
+          <Button
+            onClick={sessionState === "running" ? handleDeposit : handlePlayPause}
+            className="micro-interact bg-theme-cta text-theme-cta-text hover:bg-theme-cta-hover h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
+            style={{
+              boxShadow: "0 0 30px hsl(var(--color-glow) / 0.3)",
+            }}
+            data-testid={sessionState === "running" ? "button-deposit" : "button-manifest"}
+          >
+            {sessionState === "running" ? (
+              <>
+                <DollarSign className="w-5 h-5" />
+                <span className="ml-2">Deposit</span>
+              </>
+            ) : (
+              <>
+                <Headphones className="w-5 h-5" />
+                <span className="ml-2">Manifest</span>
+              </>
+            )}
+          </Button>
       </div>
 
       {/* Bottom Navigation Bar */}
