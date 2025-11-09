@@ -94,7 +94,7 @@ export default function Bank() {
 
       {/* Footer Widgets (placeholder for future features) */}
       {appState.history.length > 0 && (
-        <div className="flex-none px-5 pb-8">
+        <div className="flex-none px-5 pb-4">
           <div className="max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
             <div className="bg-aurora-purple/20 border border-pulse-purple/30 rounded-xl px-4 py-2">
               <p className="text-gold-soft text-sm font-medium">
@@ -104,6 +104,13 @@ export default function Bank() {
           </div>
         </div>
       )}
+
+      {/* Disclaimer */}
+      <div className="flex-none py-3 px-5 border-t border-aurora-purple/20 bg-black/30 backdrop-blur-sm">
+        <p className="text-center text-xs text-mist-lavender/60 font-inter">
+          Not Legal Currency • For Motivation & Focus Tracking Only
+        </p>
+      </div>
     </div>
   );
 }
