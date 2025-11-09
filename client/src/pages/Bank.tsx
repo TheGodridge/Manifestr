@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { InfoModal } from "@/components/InfoModal";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { formatCents, formatDuration, formatTimestamp } from "@/lib/formatCurrency";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -105,12 +106,7 @@ export default function Bank() {
         </div>
       )}
 
-      {/* Disclaimer */}
-      <div className="flex-none py-3 px-5 border-t border-aurora-purple/20 bg-black/30 backdrop-blur-sm">
-        <p className="text-center text-xs text-mist-lavender/60 font-inter">
-          Not Legal Currency • For Motivation & Focus Tracking Only
-        </p>
-      </div>
+      <InfoModal />
     </div>
   );
 }

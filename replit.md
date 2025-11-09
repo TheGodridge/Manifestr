@@ -158,6 +158,16 @@ Preferred communication style: Simple, everyday language.
 - Custom quote management (add/remove)
 - Full app reset with confirmation dialog
 
+**Info Modal**:
+- Floating question mark button in bottom-right corner of all pages
+- Fixed positioning (96px from bottom) to avoid overlapping navigation
+- Opens modal with three sections:
+  - Legal Notice: Clarifies virtual currency has no monetary value
+  - Copyright: Dynamic year display
+  - Developer Notes: Philosophy, audio details, design inspiration, technology stack
+- Full accessibility support with aria-label and DialogDescription
+- Cosmic-themed styling matching app aesthetic
+
 ### External Dependencies
 
 **UI Components**: 

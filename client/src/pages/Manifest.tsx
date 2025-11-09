@@ -6,6 +6,7 @@ import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { DepositModal } from "@/components/DepositModal";
 import { FocusMultiplierBar } from "@/components/FocusMultiplierBar";
 import { ThemeBackground } from "@/components/ThemeBackground";
+import { InfoModal } from "@/components/InfoModal";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { DIFFICULTY_CONFIGS, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
 import { Headphones, DollarSign, TrendingUp } from "lucide-react";
@@ -428,13 +429,6 @@ export default function Manifest() {
         </Button>
       </div>
 
-      {/* Disclaimer */}
-      <div className="flex-none py-2 px-5 bg-black/30 backdrop-blur-sm">
-        <p className="text-center text-xs text-theme-text-secondary/60 font-inter">
-          Not Legal Currency • For Motivation & Focus Tracking Only
-        </p>
-      </div>
-
       {/* Bottom Navigation Bar */}
       <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm">
         <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
@@ -469,6 +463,8 @@ export default function Manifest() {
         amount={sessionCents}
         onConfirm={confirmDeposit}
       />
+
+      <InfoModal />
     </div>
   );
 }
