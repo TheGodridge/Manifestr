@@ -368,8 +368,8 @@ export default function Manifest() {
             className="text-center text-theme-text-secondary font-inter font-medium leading-relaxed"
             style={{
               fontSize: "clamp(0.875rem, 2vw + 0.5rem, 1.25rem)",
-              wordBreak: "break-word",
-              hyphens: "auto",
+              overflowWrap: "break-word",
+              wordBreak: "normal",
             }}
             data-testid="affirmation-text"
           >
