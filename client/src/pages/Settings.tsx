@@ -213,9 +213,9 @@ export default function Settings() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-night-sky border-pulse-purple/30">
-                  <SelectItem value="LoFi" className="text-gold-soft">Lo-Fi Focus</SelectItem>
-                  <SelectItem value="528Hz" className="text-gold-soft">528 Hz Tone</SelectItem>
-                  <SelectItem value="Waves" className="text-gold-soft">Rain + Waves</SelectItem>
+                  <SelectItem value="Theta Waves" className="text-gold-soft">Theta Waves</SelectItem>
+                  <SelectItem value="Ocean Meditation" className="text-gold-soft">Ocean Meditation</SelectItem>
+                  <SelectItem value="Forest Ambience" className="text-gold-soft">Forest Ambience</SelectItem>
                 </SelectContent>
               </Select>
             </div>

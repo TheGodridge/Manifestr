@@ -7,7 +7,7 @@ class AudioService {
   private bufferSource: AudioBufferSourceNode | null = null;
   private lfo: OscillatorNode | null = null;
   private isPlaying: boolean = false;
-  private currentPack: MusicPack = "LoFi";
+  private currentPack: MusicPack = "Theta Waves";
   private volume: number = 50;
 
   initialize() {
@@ -44,47 +44,68 @@ class AudioService {
     // Convert 0-100 volume to 0-0.15 gain (max slightly higher for user control)
     this.gainNode.gain.value = (this.volume / 100) * 0.15;
 
-    // Generate appropriate audio based on music pack
-    if (musicPack === "528Hz") {
-      // 528 Hz healing frequency
-      this.oscillator = this.audioContext.createOscillator();
-      this.oscillator.type = "sine";
-      this.oscillator.frequency.setValueAtTime(528, this.audioContext.currentTime);
-      this.oscillator.connect(this.gainNode);
-      this.oscillator.start();
-    } else if (musicPack === "Waves") {
-      // Pink noise approximation for waves
-      this.createPinkNoise();
+    // Generate appropriate meditation audio based on music pack
+    if (musicPack === "Theta Waves") {
+      // Binaural beats for deep meditation (theta waves 4-8 Hz)
+      this.createBinauralBeats();
+    } else if (musicPack === "Ocean Meditation") {
+      // Enhanced ocean waves with natural rhythm
+      this.createOceanWaves();
     } else {
-      // LoFi - simple ambient tone at 60 BPM feel
-      this.oscillator = this.audioContext.createOscillator();
-      this.oscillator.type = "sine";
-      this.oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime); // A3
-      this.oscillator.connect(this.gainNode);
-      this.oscillator.start();
-      
-      // Add subtle LFO for ambient feel
-      this.lfo = this.audioContext.createOscillator();
-      const lfoGain = this.audioContext.createGain();
-      this.lfo.frequency.value = 1; // 1 Hz modulation
-      lfoGain.gain.value = 5; // Small frequency deviation
-      this.lfo.connect(lfoGain);
-      lfoGain.connect(this.oscillator.frequency);
-      this.lfo.start();
+      // Forest Ambience - layered nature sounds
+      this.createForestAmbience();
     }
 
     this.isPlaying = true;
   }
 
-  private createPinkNoise() {
+  private createBinauralBeats() {
     if (!this.audioContext || !this.gainNode) return;
 
-    // Create buffer for pink noise
-    const bufferSize = 2 * this.audioContext.sampleRate;
+    // Binaural beats: Left ear 200Hz, Right ear 206Hz = 6Hz difference (theta waves)
+    // Theta waves (4-8 Hz) promote deep meditation and relaxation
+    const baseFreq = 200;
+    const beatFreq = 6; // Theta wave frequency
+
+    // Create stereo oscillators
+    const leftOsc = this.audioContext.createOscillator();
+    const rightOsc = this.audioContext.createOscillator();
+    
+    leftOsc.type = "sine";
+    rightOsc.type = "sine";
+    leftOsc.frequency.value = baseFreq;
+    rightOsc.frequency.value = baseFreq + beatFreq;
+
+    // Create stereo panner
+    const merger = this.audioContext.createChannelMerger(2);
+    const leftGain = this.audioContext.createGain();
+    const rightGain = this.audioContext.createGain();
+    
+    leftGain.gain.value = 0.5;
+    rightGain.gain.value = 0.5;
+
+    leftOsc.connect(leftGain);
+    rightOsc.connect(rightGain);
+    leftGain.connect(merger, 0, 0);
+    rightGain.connect(merger, 0, 1);
+    merger.connect(this.gainNode);
+
+    leftOsc.start();
+    rightOsc.start();
+
+    this.oscillator = leftOsc;
+    this.lfo = rightOsc; // Reuse lfo to store right oscillator
+  }
+
+  private createOceanWaves() {
+    if (!this.audioContext || !this.gainNode) return;
+
+    // Create pink noise for wave texture
+    const bufferSize = 4 * this.audioContext.sampleRate;
     const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
     const data = buffer.getChannelData(0);
 
-    // Generate pink noise using Paul Kellet's algorithm
+    // Generate pink noise
     let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
@@ -95,15 +116,91 @@ class AudioService {
       b4 = 0.55000 * b4 + white * 0.5329522;
       b5 = -0.7616 * b5 - white * 0.0168980;
       data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-      data[i] *= 0.11; // Reduce volume
+      data[i] *= 0.15; // Adjust volume
       b6 = white * 0.115926;
     }
 
     this.bufferSource = this.audioContext.createBufferSource();
     this.bufferSource.buffer = buffer;
     this.bufferSource.loop = true;
-    this.bufferSource.connect(this.gainNode);
+
+    // Add wave-like modulation (0.2 Hz = slow rolling waves)
+    const waveLFO = this.audioContext.createOscillator();
+    const lfoGain = this.audioContext.createGain();
+    waveLFO.frequency.value = 0.2;
+    lfoGain.gain.value = 0.3;
+    
+    const modGain = this.audioContext.createGain();
+    waveLFO.connect(lfoGain);
+    lfoGain.connect(modGain.gain);
+    
+    this.bufferSource.connect(modGain);
+    modGain.connect(this.gainNode);
+    
     this.bufferSource.start();
+    waveLFO.start();
+    
+    this.lfo = waveLFO;
+  }
+
+  private createForestAmbience() {
+    if (!this.audioContext || !this.gainNode) return;
+
+    // Base ambient drone (wind through trees)
+    const drone = this.audioContext.createOscillator();
+    drone.type = "sawtooth";
+    drone.frequency.value = 110; // Low A
+    
+    const droneFilter = this.audioContext.createBiquadFilter();
+    droneFilter.type = "lowpass";
+    droneFilter.frequency.value = 300;
+    droneFilter.Q.value = 0.5;
+    
+    const droneGain = this.audioContext.createGain();
+    droneGain.gain.value = 0.15;
+    
+    drone.connect(droneFilter);
+    droneFilter.connect(droneGain);
+    droneGain.connect(this.gainNode);
+    drone.start();
+
+    // Wind modulation
+    const windLFO = this.audioContext.createOscillator();
+    const windLFOGain = this.audioContext.createGain();
+    windLFO.frequency.value = 0.3;
+    windLFOGain.gain.value = 20;
+    windLFO.connect(windLFOGain);
+    windLFOGain.connect(droneFilter.frequency);
+    windLFO.start();
+
+    // Soft white noise for rustling leaves
+    const noiseSize = 2 * this.audioContext.sampleRate;
+    const noiseBuffer = this.audioContext.createBuffer(1, noiseSize, this.audioContext.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < noiseSize; i++) {
+      noiseData[i] = (Math.random() * 2 - 1) * 0.1;
+    }
+
+    const noiseSource = this.audioContext.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
+    
+    const noiseFilter = this.audioContext.createBiquadFilter();
+    noiseFilter.type = "highpass";
+    noiseFilter.frequency.value = 2000;
+    
+    const noiseGain = this.audioContext.createGain();
+    noiseGain.gain.value = 0.08;
+    
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.gainNode);
+    noiseSource.start();
+
+    this.oscillator = drone;
+    this.lfo = windLFO;
+    this.bufferSource = noiseSource;
   }
 
   async pause() {
@@ -196,29 +293,13 @@ class AudioService {
     this.currentPack = newPack;
 
     // Start new audio source
-    if (newPack === "528Hz") {
-      this.oscillator = this.audioContext.createOscillator();
-      this.oscillator.type = "sine";
-      this.oscillator.frequency.setValueAtTime(528, this.audioContext.currentTime);
-      this.oscillator.connect(this.gainNode);
-      this.oscillator.start();
-    } else if (newPack === "Waves") {
-      this.createPinkNoise();
+    if (newPack === "Theta Waves") {
+      this.createBinauralBeats();
+    } else if (newPack === "Ocean Meditation") {
+      this.createOceanWaves();
     } else {
-      // LoFi
-      this.oscillator = this.audioContext.createOscillator();
-      this.oscillator.type = "sine";
-      this.oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
-      this.oscillator.connect(this.gainNode);
-      this.oscillator.start();
-      
-      this.lfo = this.audioContext.createOscillator();
-      const lfoGain = this.audioContext.createGain();
-      this.lfo.frequency.value = 1;
-      lfoGain.gain.value = 5;
-      this.lfo.connect(lfoGain);
-      lfoGain.connect(this.oscillator.frequency);
-      this.lfo.start();
+      // Forest Ambience
+      this.createForestAmbience();
     }
 
     // Clean up old nodes after crossfade completes

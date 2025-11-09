@@ -94,10 +94,12 @@ Preferred communication style: Simple, everyday language.
 
 ### Audio System
 
-**Implementation**: Web Audio API service (`audioService.ts`)
-- Three music packs: LoFi (220Hz sine wave), 528Hz (healing frequency), Waves (pink noise)
-- Low volume (0.05) ambient background audio
-- Play/pause/stop controls
+**Implementation**: Web Audio API service (`audioService.ts`) with sophisticated meditation soundscapes
+- **Theta Waves**: Binaural beats (200Hz left ear, 206Hz right ear) creating 6Hz theta wave difference for deep meditation
+- **Ocean Meditation**: Enhanced pink noise with slow wave-like modulation (0.2Hz) mimicking natural ocean rhythms
+- **Forest Ambience**: Layered soundscape with low-frequency drone (110Hz filtered sawtooth for wind), wind modulation (0.3Hz), and high-frequency white noise for rustling leaves
+- Volume control (0-100%) with smooth transitions
+- Crossfade between music packs for seamless switching
 - AudioContext management with proper initialization and state handling
 
 ### Core Features
@@ -116,7 +118,9 @@ Preferred communication style: Simple, everyday language.
 - Context-aware main button: "Manifest" when idle, "Deposit" during sessions
 
 **Quote Rotation**: 
-- Array of starter affirmations
+- Library of 100 manifestation affirmations (includes short phrases and full paragraphs)
+- Shuffled on app load for variety each session
+- Responsive text sizing using CSS clamp() to fit container without overflow
 - Configurable rotation interval (default 15 seconds)
 - Favorite/unfavorite functionality
 

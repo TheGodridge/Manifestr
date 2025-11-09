@@ -341,13 +341,20 @@ export default function Manifest() {
       
       {/* Main Content - Centered */}
       <div className="flex-1 flex flex-col items-center justify-center px-5">
-        {/* Affirmation */}
-        <p 
-          className="text-center text-theme-text-secondary text-lg sm:text-xl font-inter font-medium leading-relaxed mb-8 max-w-2xl"
-          data-testid="affirmation-text"
-        >
-          {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
-        </p>
+        {/* Affirmation - Responsive text that shrinks to fit */}
+        <div className="mb-8 max-w-2xl w-full px-4 min-h-[80px] flex items-center justify-center">
+          <p 
+            className="text-center text-theme-text-secondary font-inter font-medium leading-relaxed"
+            style={{
+              fontSize: "clamp(0.875rem, 2vw + 0.5rem, 1.25rem)",
+              wordBreak: "break-word",
+              hyphens: "auto",
+            }}
+            data-testid="affirmation-text"
+          >
+            {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
+          </p>
+        </div>
 
         {/* Separator */}
         <div className="w-full max-w-2xl mb-8 flex items-center justify-center">
