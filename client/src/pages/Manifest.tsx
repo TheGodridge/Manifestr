@@ -302,11 +302,6 @@ export default function Manifest() {
     >
       {/* Main Content - Centered */}
       <div className="flex-1 flex flex-col items-center justify-center px-5">
-        {/* Streak Display */}
-        <div className="mb-6">
-          <FireChip streak={appState.currentStreak} />
-        </div>
-
         {/* Affirmation */}
         <p 
           className="text-center text-mist-lavender text-lg sm:text-xl font-inter font-medium leading-relaxed mb-8 max-w-2xl"
@@ -315,19 +310,19 @@ export default function Manifest() {
           {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
         </p>
 
-        {/* Counter */}
-        <div className="relative mb-6">
+        {/* Counter - Left-aligned to prevent shifting */}
+        <div className="relative mb-6 w-full max-w-2xl">
           {/* Radial glow effect */}
           <div
-            className="absolute inset-0 blur-3xl opacity-30"
+            className="absolute left-0 top-0 blur-3xl opacity-30 w-full h-full"
             style={{
-              background: "radial-gradient(circle, rgba(59, 10, 102, 0.6) 0%, transparent 70%)",
+              background: "radial-gradient(circle at left center, rgba(59, 10, 102, 0.6) 0%, transparent 70%)",
             }}
           />
           
           <AnimatedCounter
             value={sessionCents}
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl relative z-10"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl relative z-10 text-left"
             isDepositing={isDepositing}
           />
         </div>
