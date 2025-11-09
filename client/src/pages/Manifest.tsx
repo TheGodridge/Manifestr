@@ -50,6 +50,97 @@ export default function Manifest() {
     };
   }, [appState.preferences.quoteIntervalSec, allQuotes.length]);
 
+  // Auto-deposit on exit (beforeunload)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Only trigger if there are unsaved cents and auto-deposit is enabled
+      if (sessionCents > 0) {
+        if (appState.preferences.autoDepositOnExit) {
+          // Auto-deposit silently
+          const depositAmount = sessionCents;
+          const durationSec = focusedSeconds;
+          const now = Date.now();
+          
+          // Calculate streak (same logic as confirmDeposit)
+          const todayStart = new Date(now).setHours(0, 0, 0, 0);
+          const lastDepositStart = appState.lastDepositDate ? new Date(appState.lastDepositDate).setHours(0, 0, 0, 0) : null;
+          
+          let newStreak = appState.currentStreak;
+          let isNewDay = false;
+          
+          if (!lastDepositStart) {
+            // First ever deposit
+            newStreak = 1;
+            isNewDay = true;
+          } else {
+            const daysDiff = Math.floor((todayStart - lastDepositStart) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff === 0) {
+              // Same day - maintain streak
+              newStreak = appState.currentStreak;
+            } else if (daysDiff === 1) {
+              // Next day - increment streak
+              newStreak = appState.currentStreak + 1;
+              isNewDay = true;
+            } else {
+              // Missed days - reset streak
+              newStreak = 1;
+              isNewDay = true;
+            }
+          }
+          
+          // Calculate overnight compound interest (only for consecutive days)
+          let compoundBonus = 0;
+          if (lastDepositStart) {
+            const daysDiff = Math.floor((todayStart - lastDepositStart) / (1000 * 60 * 60 * 24));
+            // Award compound interest only if exactly 1 day passed (consecutive streak)
+            if (daysDiff === 1 && appState.currentStreak > 0) {
+              // 1% compound interest per day of previous streak
+              compoundBonus = Math.floor(appState.bankTotalCents * 0.01 * appState.currentStreak);
+            }
+          }
+          
+          const newHistory: DepositHistory = {
+            id: `hx_${now}`,
+            timestamp: now,
+            durationSec,
+            amountCents: depositAmount,
+            label: getSessionLabel(),
+          };
+          
+          const newLongestStreak = Math.max(newStreak, appState.longestStreak);
+          
+          // Update state synchronously before page unload
+          const newState = {
+            ...appState,
+            bankTotalCents: appState.bankTotalCents + depositAmount + compoundBonus,
+            history: [newHistory, ...appState.history],
+            currentStreak: newStreak,
+            longestStreak: newLongestStreak,
+            lastDepositDate: now,
+          };
+          
+          // Write to localStorage immediately
+          localStorage.setItem("manifestr_state", JSON.stringify(newState));
+          
+          // No browser confirmation needed
+        } else {
+          // Show browser confirmation dialog
+          const message = `You have $${(sessionCents / 100).toFixed(2)} unsaved. Deposit before leaving?`;
+          e.preventDefault();
+          e.returnValue = message;
+          return message;
+        }
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [sessionCents, focusedSeconds, appState]);
+
   // Session counter
   useEffect(() => {
     if (sessionState === "running") {
