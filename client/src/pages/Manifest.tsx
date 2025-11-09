@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { DepositModal } from "@/components/DepositModal";
 import { FireChip } from "@/components/FireChip";
+import { FocusMultiplierBar } from "@/components/FocusMultiplierBar";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { EARN_RATE_CENTS_PER_SEC, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
 import { Headphones, DollarSign, TrendingUp } from "lucide-react";
@@ -22,12 +23,23 @@ export default function Manifest() {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
+  const [currentMultiplier, setCurrentMultiplier] = useState(1);
   
   const timerRef = useRef<NodeJS.Timeout>();
   const quoteTimerRef = useRef<NodeJS.Timeout>();
+  const fractionalCentsRef = useRef(0); // Track fractional cents for precision
 
   // Combined quotes: custom + starter
   const allQuotes = [...appState.customQuotes, ...STARTER_QUOTES];
+
+  // Calculate exponential multiplier based on session duration
+  const calculateMultiplier = (seconds: number): number => {
+    // Exponential growth: 2% increase every 30 seconds
+    // Formula: multiplier = 1.02^(seconds/30)
+    // Reaches ~1.14x at 5 min, ~1.31x at 10 min, caps at 4x around 20 min
+    const rawMultiplier = Math.pow(1.02, seconds / 30);
+    return Math.min(rawMultiplier, 4);
+  };
 
   // Quote rotation
   useEffect(() => {
@@ -141,12 +153,27 @@ export default function Manifest() {
     };
   }, [sessionCents, focusedSeconds, appState]);
 
-  // Session counter
+  // Session counter with exponential growth
   useEffect(() => {
     if (sessionState === "running") {
       timerRef.current = setInterval(() => {
-        setSessionCents((prev) => prev + EARN_RATE_CENTS_PER_SEC);
-        setFocusedSeconds((prev) => prev + 1);
+        setFocusedSeconds((prev) => {
+          const nextSeconds = prev + 1;
+          const multiplier = calculateMultiplier(nextSeconds);
+          
+          // Calculate exact earnings with fractional cents
+          const exactEarnings = EARN_RATE_CENTS_PER_SEC * multiplier;
+          const totalWithFraction = fractionalCentsRef.current + exactEarnings;
+          
+          // Extract whole cents and keep remainder
+          const wholeCents = Math.floor(totalWithFraction);
+          fractionalCentsRef.current = totalWithFraction - wholeCents;
+          
+          setSessionCents((prevCents) => prevCents + wholeCents);
+          setCurrentMultiplier(multiplier);
+          
+          return nextSeconds;
+        });
       }, 1000);
     } else {
       if (timerRef.current) {
@@ -281,6 +308,8 @@ export default function Manifest() {
       setFocusedSeconds(0);
       setSessionState("idle");
       setIsDepositing(false);
+      setCurrentMultiplier(1);
+      fractionalCentsRef.current = 0; // Reset fractional cents accumulator
       audioService.stop();
     }, 600); // Match coin-drop animation duration
   };
@@ -331,6 +360,13 @@ export default function Manifest() {
             isDepositing={isDepositing}
           />
         </div>
+
+        {/* Focus Multiplier Progress Bar */}
+        {sessionState === "running" && (
+          <div className="mb-6 w-full max-w-2xl">
+            <FocusMultiplierBar multiplier={currentMultiplier} />
+          </div>
+        )}
         
         <p className="text-mist-lavender text-sm sm:text-base font-inter mb-8" data-testid="subtext">
           Stay present — your energy compounds.
