@@ -16,8 +16,33 @@ export const themeSchema = z.enum(["Galaxy", "Ocean", "Neon Glow", "Minimal"]);
 export type Theme = z.infer<typeof themeSchema>;
 
 // Music pack options
-export const musicPackSchema = z.enum(["Theta Waves", "Ocean Meditation", "Forest Ambience"]);
+export const musicPackSchema = z.enum([
+  "Deep Space",
+  "Cosmos", 
+  "Forest Sonnet",
+  "Prairie Whispers"
+]);
 export type MusicPack = z.infer<typeof musicPackSchema>;
+
+// Music pack metadata (imported file paths configured in audioService)
+export const MUSIC_PACK_INFO: Record<MusicPack, { title: string; description: string }> = {
+  "Deep Space": {
+    title: "Deep Space 10Hz",
+    description: "Deep theta wave meditation for profound relaxation"
+  },
+  "Cosmos": {
+    title: "Cosmos",
+    description: "Celestial soundscapes for cosmic awareness"
+  },
+  "Forest Sonnet": {
+    title: "Sonnet of the Forest",
+    description: "Natural forest ambience for grounding"
+  },
+  "Prairie Whispers": {
+    title: "Whispers of the Prairie",
+    description: "Gentle prairie winds for peaceful meditation"
+  }
+};
 
 // Focus level (difficulty) options
 export const focusLevelSchema = z.enum(["Novice", "Intermediate", "Advanced", "Expert"]);
@@ -55,7 +80,7 @@ export type SessionState = "idle" | "running" | "paused" | "depositing";
 // Default values
 export const DEFAULT_PREFERENCES: Preferences = {
   theme: "Galaxy",
-  music: "Theta Waves",
+  music: "Deep Space",
   quoteIntervalSec: 15,
   autoDepositOnExit: false,
   volume: 50,

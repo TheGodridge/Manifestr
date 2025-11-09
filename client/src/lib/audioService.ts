@@ -1,206 +1,226 @@
 import { MusicPack } from "@shared/schema";
 
+// Import MP3 files using @assets alias
+import deepSpaceUrl from "@assets/Deep Space 10 Hertz_1762708798127.mp3";
+import cosmosUrl from "@assets/Cosmos _1762708798127.mp3";
+import forestSonnetUrl from "@assets/Sonnet of the Forest _1762708798127.mp3";
+import prairieWhispersUrl from "@assets/Whispers of the Prairie _1762708798127.mp3";
+
+// Track registry mapping MusicPack IDs to file paths
+const TRACK_REGISTRY: Record<MusicPack, string> = {
+  "Deep Space": deepSpaceUrl,
+  "Cosmos": cosmosUrl,
+  "Forest Sonnet": forestSonnetUrl,
+  "Prairie Whispers": prairieWhispersUrl,
+};
+
 class AudioService {
   private audioContext: AudioContext | null = null;
-  private oscillator: OscillatorNode | null = null;
-  private gainNode: GainNode | null = null;
-  private bufferSource: AudioBufferSourceNode | null = null;
-  private lfo: OscillatorNode | null = null;
+  private currentSource: AudioBufferSourceNode | null = null;
+  private nextSource: AudioBufferSourceNode | null = null;
+  private currentGain: GainNode | null = null;
+  private nextGain: GainNode | null = null;
+  private masterGain: GainNode | null = null;
+  
+  // Audio buffer cache
+  private bufferCache: Map<MusicPack, AudioBuffer> = new Map();
+  private loadingPromises: Map<MusicPack, Promise<AudioBuffer>> = new Map();
+  
   private isPlaying: boolean = false;
-  private currentPack: MusicPack = "Theta Waves";
+  private currentPack: MusicPack = "Deep Space";
   private volume: number = 50;
 
   initialize() {
     if (!this.audioContext) {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // Create master gain node
+      this.masterGain = this.audioContext.createGain();
+      this.masterGain.connect(this.audioContext.destination);
+      this.masterGain.gain.value = (this.volume / 100);
     }
+  }
+
+  async preloadAll() {
+    this.initialize();
+    const packs: MusicPack[] = ["Deep Space", "Cosmos", "Forest Sonnet", "Prairie Whispers"];
+    
+    // Preload all tracks in parallel
+    await Promise.allSettled(packs.map(pack => this.loadAudioBuffer(pack)));
+  }
+
+  private async loadAudioBuffer(pack: MusicPack): Promise<AudioBuffer> {
+    // Return cached buffer if available
+    if (this.bufferCache.has(pack)) {
+      return this.bufferCache.get(pack)!;
+    }
+
+    // Return existing loading promise if in progress
+    if (this.loadingPromises.has(pack)) {
+      return this.loadingPromises.get(pack)!;
+    }
+
+    // Start new load
+    const loadPromise = (async () => {
+      try {
+        const url = TRACK_REGISTRY[pack];
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        
+        if (!this.audioContext) {
+          throw new Error("AudioContext not initialized");
+        }
+
+        const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+        this.bufferCache.set(pack, audioBuffer);
+        return audioBuffer;
+      } catch (error) {
+        console.error(`Failed to load audio pack: ${pack}`, error);
+        throw error;
+      } finally {
+        this.loadingPromises.delete(pack);
+      }
+    })();
+
+    this.loadingPromises.set(pack, loadPromise);
+    return loadPromise;
   }
 
   async play(musicPack: MusicPack, volume?: number) {
     this.initialize();
-    if (!this.audioContext) return;
+    if (!this.audioContext || !this.masterGain) return;
 
     if (volume !== undefined) {
       this.volume = volume;
+      this.masterGain.gain.value = (this.volume / 100);
     }
 
-    // Ensure AudioContext is running (resume if suspended)
+    // Ensure AudioContext is running
     if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
     }
 
-    // If already playing a different pack, crossfade
+    // If already playing the same pack, just resume if needed
+    if (this.isPlaying && this.currentPack === musicPack) {
+      if (this.audioContext.state === "suspended") {
+        await this.audioContext.resume();
+      }
+      return;
+    }
+
+    // If playing a different pack, crossfade
     if (this.isPlaying && this.currentPack !== musicPack) {
       await this.crossfade(musicPack);
       return;
     }
 
-    this.stop(); // Stop any existing playback
+    // Start fresh playback
     this.currentPack = musicPack;
-
-    // Create gain node for volume control
-    this.gainNode = this.audioContext.createGain();
-    this.gainNode.connect(this.audioContext.destination);
-    // Convert 0-100 volume to 0-0.15 gain (max slightly higher for user control)
-    this.gainNode.gain.value = (this.volume / 100) * 0.15;
-
-    // Generate appropriate meditation audio based on music pack
-    if (musicPack === "Theta Waves") {
-      // Binaural beats for deep meditation (theta waves 4-8 Hz)
-      this.createBinauralBeats();
-    } else if (musicPack === "Ocean Meditation") {
-      // Enhanced ocean waves with natural rhythm
-      this.createOceanWaves();
-    } else {
-      // Forest Ambience - layered nature sounds
-      this.createForestAmbience();
+    
+    try {
+      const buffer = await this.loadAudioBuffer(musicPack);
+      await this.startPlayback(buffer);
+      this.isPlaying = true;
+    } catch (error) {
+      console.error("Failed to start playback:", error);
     }
-
-    this.isPlaying = true;
   }
 
-  private createBinauralBeats() {
-    if (!this.audioContext || !this.gainNode) return;
+  private async startPlayback(buffer: AudioBuffer) {
+    if (!this.audioContext || !this.masterGain) return;
 
-    // Binaural beats: Left ear 200Hz, Right ear 206Hz = 6Hz difference (theta waves)
-    // Theta waves (4-8 Hz) promote deep meditation and relaxation
-    const baseFreq = 200;
-    const beatFreq = 6; // Theta wave frequency
+    // Stop any existing playback
+    this.stopCurrentSource();
 
-    // Create stereo oscillators
-    const leftOsc = this.audioContext.createOscillator();
-    const rightOsc = this.audioContext.createOscillator();
-    
-    leftOsc.type = "sine";
-    rightOsc.type = "sine";
-    leftOsc.frequency.value = baseFreq;
-    rightOsc.frequency.value = baseFreq + beatFreq;
+    // Create new gain node for this track
+    this.currentGain = this.audioContext.createGain();
+    this.currentGain.connect(this.masterGain);
+    this.currentGain.gain.value = 1.0;
 
-    // Create stereo panner
-    const merger = this.audioContext.createChannelMerger(2);
-    const leftGain = this.audioContext.createGain();
-    const rightGain = this.audioContext.createGain();
-    
-    leftGain.gain.value = 0.5;
-    rightGain.gain.value = 0.5;
-
-    leftOsc.connect(leftGain);
-    rightOsc.connect(rightGain);
-    leftGain.connect(merger, 0, 0);
-    rightGain.connect(merger, 0, 1);
-    merger.connect(this.gainNode);
-
-    leftOsc.start();
-    rightOsc.start();
-
-    this.oscillator = leftOsc;
-    this.lfo = rightOsc; // Reuse lfo to store right oscillator
+    // Create buffer source
+    this.currentSource = this.audioContext.createBufferSource();
+    this.currentSource.buffer = buffer;
+    this.currentSource.loop = true;
+    this.currentSource.connect(this.currentGain);
+    this.currentSource.start(0);
   }
 
-  private createOceanWaves() {
-    if (!this.audioContext || !this.gainNode) return;
+  private async crossfade(newPack: MusicPack) {
+    if (!this.audioContext || !this.masterGain) return;
 
-    // Create pink noise for wave texture
-    const bufferSize = 4 * this.audioContext.sampleRate;
-    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
+    const crossfadeDuration = 0.75; // 750ms
+    const now = this.audioContext.currentTime;
 
-    // Generate pink noise
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179;
-      b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
-      data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-      data[i] *= 0.15; // Adjust volume
-      b6 = white * 0.115926;
+    try {
+      // Load new buffer
+      const newBuffer = await this.loadAudioBuffer(newPack);
+
+      // Store old gain for fade out
+      const oldGain = this.currentGain;
+      const oldSource = this.currentSource;
+
+      // Fade out old audio
+      if (oldGain) {
+        oldGain.gain.setValueAtTime(oldGain.gain.value, now);
+        oldGain.gain.linearRampToValueAtTime(0, now + crossfadeDuration);
+      }
+
+      // Create new gain node starting at 0
+      this.nextGain = this.audioContext.createGain();
+      this.nextGain.connect(this.masterGain);
+      this.nextGain.gain.setValueAtTime(0, now);
+      this.nextGain.gain.linearRampToValueAtTime(1.0, now + crossfadeDuration);
+
+      // Create new source
+      this.nextSource = this.audioContext.createBufferSource();
+      this.nextSource.buffer = newBuffer;
+      this.nextSource.loop = true;
+      this.nextSource.connect(this.nextGain);
+      this.nextSource.start(0);
+
+      // Update current references
+      this.currentPack = newPack;
+
+      // Clean up old nodes after crossfade
+      setTimeout(() => {
+        if (oldSource) {
+          try {
+            oldSource.stop();
+            oldSource.disconnect();
+          } catch (e) {
+            // Already stopped
+          }
+        }
+        if (oldGain) {
+          oldGain.disconnect();
+        }
+
+        // Swap next to current
+        this.currentSource = this.nextSource;
+        this.currentGain = this.nextGain;
+        this.nextSource = null;
+        this.nextGain = null;
+      }, crossfadeDuration * 1000 + 100);
+
+    } catch (error) {
+      console.error("Crossfade failed:", error);
     }
-
-    this.bufferSource = this.audioContext.createBufferSource();
-    this.bufferSource.buffer = buffer;
-    this.bufferSource.loop = true;
-
-    // Add wave-like modulation (0.2 Hz = slow rolling waves)
-    const waveLFO = this.audioContext.createOscillator();
-    const lfoGain = this.audioContext.createGain();
-    waveLFO.frequency.value = 0.2;
-    lfoGain.gain.value = 0.3;
-    
-    const modGain = this.audioContext.createGain();
-    waveLFO.connect(lfoGain);
-    lfoGain.connect(modGain.gain);
-    
-    this.bufferSource.connect(modGain);
-    modGain.connect(this.gainNode);
-    
-    this.bufferSource.start();
-    waveLFO.start();
-    
-    this.lfo = waveLFO;
   }
 
-  private createForestAmbience() {
-    if (!this.audioContext || !this.gainNode) return;
-
-    // Base ambient drone (wind through trees)
-    const drone = this.audioContext.createOscillator();
-    drone.type = "sawtooth";
-    drone.frequency.value = 110; // Low A
-    
-    const droneFilter = this.audioContext.createBiquadFilter();
-    droneFilter.type = "lowpass";
-    droneFilter.frequency.value = 300;
-    droneFilter.Q.value = 0.5;
-    
-    const droneGain = this.audioContext.createGain();
-    droneGain.gain.value = 0.15;
-    
-    drone.connect(droneFilter);
-    droneFilter.connect(droneGain);
-    droneGain.connect(this.gainNode);
-    drone.start();
-
-    // Wind modulation
-    const windLFO = this.audioContext.createOscillator();
-    const windLFOGain = this.audioContext.createGain();
-    windLFO.frequency.value = 0.3;
-    windLFOGain.gain.value = 20;
-    windLFO.connect(windLFOGain);
-    windLFOGain.connect(droneFilter.frequency);
-    windLFO.start();
-
-    // Soft white noise for rustling leaves
-    const noiseSize = 2 * this.audioContext.sampleRate;
-    const noiseBuffer = this.audioContext.createBuffer(1, noiseSize, this.audioContext.sampleRate);
-    const noiseData = noiseBuffer.getChannelData(0);
-    
-    for (let i = 0; i < noiseSize; i++) {
-      noiseData[i] = (Math.random() * 2 - 1) * 0.1;
+  private stopCurrentSource() {
+    if (this.currentSource) {
+      try {
+        this.currentSource.stop();
+        this.currentSource.disconnect();
+      } catch (e) {
+        // Already stopped
+      }
+      this.currentSource = null;
     }
-
-    const noiseSource = this.audioContext.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
-    noiseSource.loop = true;
-    
-    const noiseFilter = this.audioContext.createBiquadFilter();
-    noiseFilter.type = "highpass";
-    noiseFilter.frequency.value = 2000;
-    
-    const noiseGain = this.audioContext.createGain();
-    noiseGain.gain.value = 0.08;
-    
-    noiseSource.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(this.gainNode);
-    noiseSource.start();
-
-    this.oscillator = drone;
-    this.lfo = windLFO;
-    this.bufferSource = noiseSource;
+    if (this.currentGain) {
+      this.currentGain.disconnect();
+      this.currentGain = null;
+    }
   }
 
   async pause() {
@@ -218,114 +238,33 @@ class AudioService {
   }
 
   stop() {
-    if (this.oscillator) {
+    this.stopCurrentSource();
+    
+    if (this.nextSource) {
       try {
-        this.oscillator.stop();
-        this.oscillator.disconnect();
+        this.nextSource.stop();
+        this.nextSource.disconnect();
       } catch (e) {
-        // Oscillator may already be stopped
+        // Already stopped
       }
-      this.oscillator = null;
+      this.nextSource = null;
     }
-    if (this.lfo) {
-      try {
-        this.lfo.stop();
-        this.lfo.disconnect();
-      } catch (e) {
-        // LFO may already be stopped
-      }
-      this.lfo = null;
+    if (this.nextGain) {
+      this.nextGain.disconnect();
+      this.nextGain = null;
     }
-    if (this.bufferSource) {
-      try {
-        this.bufferSource.stop();
-        this.bufferSource.disconnect();
-      } catch (e) {
-        // Buffer source may already be stopped
-      }
-      this.bufferSource = null;
-    }
-    if (this.gainNode) {
-      this.gainNode.disconnect();
-      this.gainNode = null;
-    }
+    
     this.isPlaying = false;
   }
 
   setVolume(volume: number) {
     this.volume = Math.max(0, Math.min(100, volume));
-    if (this.gainNode) {
+    if (this.masterGain && this.audioContext) {
       // Smooth transition to new volume
-      const now = this.audioContext?.currentTime || 0;
-      this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
-      this.gainNode.gain.linearRampToValueAtTime((this.volume / 100) * 0.15, now + 0.1);
+      const now = this.audioContext.currentTime;
+      this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+      this.masterGain.gain.linearRampToValueAtTime(this.volume / 100, now + 0.1);
     }
-  }
-
-  private async crossfade(newPack: MusicPack) {
-    if (!this.audioContext) return;
-
-    const crossfadeDuration = 0.5; // 500ms
-    const now = this.audioContext.currentTime;
-
-    // Store old nodes for cleanup
-    const oldGain = this.gainNode;
-    const oldOscillator = this.oscillator;
-    const oldBuffer = this.bufferSource;
-    const oldLfo = this.lfo;
-
-    // Fade out old audio
-    if (oldGain) {
-      oldGain.gain.setValueAtTime(oldGain.gain.value, now);
-      oldGain.gain.linearRampToValueAtTime(0, now + crossfadeDuration);
-    }
-
-    // Create new gain node and start new audio at 0 volume
-    this.gainNode = this.audioContext.createGain();
-    this.gainNode.connect(this.audioContext.destination);
-    this.gainNode.gain.setValueAtTime(0, now);
-    this.gainNode.gain.linearRampToValueAtTime((this.volume / 100) * 0.15, now + crossfadeDuration);
-
-    // Reset node references for new playback
-    this.oscillator = null;
-    this.bufferSource = null;
-    this.lfo = null;
-    this.currentPack = newPack;
-
-    // Start new audio source
-    if (newPack === "Theta Waves") {
-      this.createBinauralBeats();
-    } else if (newPack === "Ocean Meditation") {
-      this.createOceanWaves();
-    } else {
-      // Forest Ambience
-      this.createForestAmbience();
-    }
-
-    // Clean up old nodes after crossfade completes
-    setTimeout(() => {
-      if (oldOscillator) {
-        try {
-          oldOscillator.stop();
-          oldOscillator.disconnect();
-        } catch (e) {}
-      }
-      if (oldLfo) {
-        try {
-          oldLfo.stop();
-          oldLfo.disconnect();
-        } catch (e) {}
-      }
-      if (oldBuffer) {
-        try {
-          oldBuffer.stop();
-          oldBuffer.disconnect();
-        } catch (e) {}
-      }
-      if (oldGain) {
-        oldGain.disconnect();
-      }
-    }, crossfadeDuration * 1000 + 100);
   }
 
   getIsPlaying(): boolean {
