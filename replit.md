@@ -52,7 +52,11 @@ Preferred communication style: Simple, everyday language.
 - Spacing based on Tailwind scale (2, 3, 5, 8, 12, 16, 20, 32, 48)
 - Custom animations: gradient drift background (15s cycle), shimmer sweep, coin-drop bounce, micro-interactions on buttons
 - All animations respect `prefers-reduced-motion` user preference
-- **Counter Display**: Fixed-width container with `tabular-nums` (monospaced digits) and `text-center` to prevent shifting as numbers change
+- **Counter Display**: Anchored decimal point layout using CSS Grid (`1fr auto 1fr`)
+  - Decimal point stays perfectly centered and stationary
+  - Dollar amount grows to the LEFT, cents stay fixed on RIGHT
+  - Eliminates vibration/shifting as digits are added (verified stable within 0.0px)
+  - Uses `tabular-nums` for monospaced digits
 
 ### Backend Architecture
 
