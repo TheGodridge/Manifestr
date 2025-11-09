@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -25,7 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useAppState } from "@/hooks/useLocalStorage";
-import { DEFAULT_APP_STATE, Theme, MusicPack } from "@shared/schema";
+import { DEFAULT_APP_STATE, Theme, MusicPack, MUSIC_PACK_INFO } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, Star, X, Plus } from "lucide-react";
 import { audioService } from "@/lib/audioService";
@@ -35,6 +35,13 @@ export default function Settings() {
   const [appState, setAppState] = useAppState();
   const { toast } = useToast();
   const [newQuote, setNewQuote] = useState("");
+
+  // Preload all audio tracks when Settings loads (safeguard for music switching)
+  useEffect(() => {
+    audioService.preloadAll().catch(err => {
+      console.warn("Failed to preload audio in Settings:", err);
+    });
+  }, []);
 
   const handleThemeChange = (theme: Theme) => {
     // Immediately update DOM attribute for instant theme application
@@ -213,9 +220,18 @@ export default function Settings() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-night-sky border-pulse-purple/30">
-                  <SelectItem value="Theta Waves" className="text-gold-soft">Theta Waves</SelectItem>
-                  <SelectItem value="Ocean Meditation" className="text-gold-soft">Ocean Meditation</SelectItem>
-                  <SelectItem value="Forest Ambience" className="text-gold-soft">Forest Ambience</SelectItem>
+                  {(Object.keys(MUSIC_PACK_INFO) as MusicPack[]).map((pack) => (
+                    <SelectItem 
+                      key={pack} 
+                      value={pack} 
+                      className="text-gold-soft"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium">{MUSIC_PACK_INFO[pack].title}</span>
+                        <span className="text-xs text-mist-lavender/70">{MUSIC_PACK_INFO[pack].description}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

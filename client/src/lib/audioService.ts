@@ -29,6 +29,7 @@ class AudioService {
   private isPlaying: boolean = false;
   private currentPack: MusicPack = "Deep Space";
   private volume: number = 50;
+  private hasPreloaded: boolean = false;
 
   initialize() {
     if (!this.audioContext) {
@@ -118,11 +119,44 @@ class AudioService {
     this.currentPack = musicPack;
     
     try {
+      // Load and play the requested track
       const buffer = await this.loadAudioBuffer(musicPack);
       await this.startPlayback(buffer);
       this.isPlaying = true;
+      
+      // Background preload remaining tracks after first successful play
+      if (!this.hasPreloaded) {
+        this.backgroundPreload(musicPack);
+      }
     } catch (error) {
       console.error("Failed to start playback:", error);
+    }
+  }
+
+  private backgroundPreload(excludePack: MusicPack) {
+    // Mark as preloaded to prevent duplicate preloading
+    this.hasPreloaded = true;
+    
+    // Preload remaining packs in background using requestIdleCallback or setTimeout
+    const preloadFunc = () => {
+      const allPacks: MusicPack[] = ["Deep Space", "Cosmos", "Forest Sonnet", "Prairie Whispers"];
+      const packsToLoad = allPacks.filter(pack => pack !== excludePack && !this.bufferCache.has(pack));
+      
+      // Load packs one at a time to avoid overwhelming the network
+      packsToLoad.forEach((pack, index) => {
+        setTimeout(() => {
+          this.loadAudioBuffer(pack).catch(err => {
+            console.warn(`Background preload failed for ${pack}:`, err);
+          });
+        }, index * 1000); // Stagger by 1 second
+      });
+    };
+
+    // Use requestIdleCallback if available, otherwise use setTimeout
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(preloadFunc);
+    } else {
+      setTimeout(preloadFunc, 100);
     }
   }
 
