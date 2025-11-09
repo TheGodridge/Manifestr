@@ -30,7 +30,7 @@ export function AnimatedCounter({ value, className = "", isDepositing = false }:
 
     const startValue = prevValueRef.current;
     const endValue = value;
-    const duration = 1000; // 1 second tween
+    const duration = 150; // Fast 150ms animation for smooth increments
     const startTime = Date.now();
 
     const animate = () => {
@@ -38,9 +38,8 @@ export function AnimatedCounter({ value, className = "", isDepositing = false }:
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      // easeOutQuad
-      const eased = 1 - Math.pow(1 - progress, 2);
-      const currentValue = Math.round(startValue + (endValue - startValue) * eased);
+      // Linear easing for smooth, predictable movement
+      const currentValue = Math.round(startValue + (endValue - startValue) * progress);
 
       const parts = splitCurrency(currentValue);
       dollarsElement.textContent = parts.sign + parts.dollars;
