@@ -1,0 +1,280 @@
+Heck yeah—here’s the full, drop-in spec for Manifestr with colors, layout, button arrangement, states, animations, copy, and logic. You can hand this to a dev or paste parts into Replit notes. It’s simple on purpose—but feels premium.
+
+⸻
+
+Manifestr — Product/Agent Description (Detailed)
+
+1) Brand & Mood
+	•	Vibe: calm + cosmic + cash-counter dopamine.
+	•	Tagline: Focus is the new currency.
+
+Color Palette (hex)
+	•	Night Sky (BG): #0A0D2A
+	•	Aurora Purple (accents/glow): #3B0A66
+	•	Pulse Purple (pressed/active): #5C318F
+	•	Gold Primary (counter/primary CTAs): #F8D94E
+	•	Soft Gold (subtext/icons): #EBD46A
+	•	Mist Lavender (secondary text): #C7BAF0
+	•	White (max contrast text): #FFFFFF (sparingly)
+
+Typography
+	•	Display: Manrope/Poppins/Inter (600–700 for headline digits)
+	•	Body: Inter/Manrope 400–500
+	•	Letter spacing: +0.2px on all-caps CTAs
+
+Iconography
+	•	Minimal line icons (24px): 🎧, 💰, 📈, ⭐, ✨ (or SF Symbols/Material Icons equivalents)
+
+⸻
+
+2) Screen Map
+	1.	Manifest Screen (Home) – read quotes, hear music, watch counter rise, deposit.
+	2.	Bank Screen – lifetime total, history list, streak/interest hint.
+	3.	Settings – themes, music, options, reset.
+
+⸻
+
+3) Manifest Screen (Home)
+
+Layout (top → bottom)
+	•	Top bar (safe area)
+	•	Rotating affirmation (centered, multi-line).
+	•	Right-aligned ⭐ (favorite); left empty for balance.
+	•	Center block
+	•	Counter (giant gold digits): $0.00
+	•	Subtext: “Stay present — your energy compounds.”
+	•	Ambient animation: slow radial glow + drifting particles.
+	•	Bottom controls (sticky, 3 buttons)
+	•	Left: 🎧 Play/Pause (secondary)
+	•	Center: 💰 Deposit (primary, emphasized)
+	•	Right: 📈 Bank (secondary)
+
+Button Arrangement & Styles
+	•	Primary (Deposit)
+	•	Fill: Gold #F8D94E
+	•	Text: Night Sky #0A0D2A
+	•	Radius: 14
+	•	Height: 54
+	•	Shadow glow: 0,0,30 with Aurora Purple #3B0A66 at 30%
+	•	Pressed state: slightly darker gold #E0C546, scale 0.98
+	•	Secondary (Play/Pause, Bank)
+	•	Fill: Aurora Purple #3B0A66
+	•	Text: Gold #F8D94E
+	•	Border: 1px Pulse Purple #5C318F (20% alpha)
+	•	Radius: 12
+	•	Height: 50
+	•	Pressed state: Pulse Purple #5C318F, scale 0.98
+	•	Counter
+	•	Color: Gold #F8D94E
+	•	Size: 64–72 on phones, 96 on tablets
+	•	Weight: 700
+	•	Text shadow: Aurora Purple #3B0A66 blur 15–20
+
+Spacing
+	•	Top quote → counter: 32
+	•	Counter → subtext: 8
+	•	Subtext → controls: 48
+	•	Button gaps: 12
+	•	Screen padding: 20
+
+Quotes (starter set)
+	•	“I’m aligned with success.”
+	•	“Every breath attracts opportunity.”
+	•	“Wealth flows where focus goes.”
+	•	“I radiate calm, confidence, and abundance.”
+	•	“I welcome unexpected money with gratitude.”
+
+Interactions
+	•	Start session: Tap 🎧 Play → counter starts rising.
+	•	Pause: Tap again → counter pauses (doesn’t reset).
+	•	Deposit: Tap 💰 → modal confirm → animate counter to 0 → toast “Banked $X.XX.”
+
+Microcopy
+	•	Deposit confirm modal:
+Title: “Deposit to Manifestr Bank?”
+Body: “You’re about to bank $X.XX of focused energy.”
+Actions: Deposit (gold), Keep Going (secondary)
+
+⸻
+
+4) Bank Screen
+
+Header
+	•	Total Manifested label (Mist Lavender)
+	•	Total big digits, gold: e.g., $4,612.98 with subtle sparkle sweep.
+
+History List (most recent first)
+	•	Row example:
+	•	+ $33.21 (gold, bold)
+	•	Subline: “Morning Focus · 6m · Today 7:42 AM”
+	•	Right: chevron for detail (optional)
+
+Footer widgets
+	•	Streak chip: “7-day streak 🔥”
+	•	Interest hint (visual only): “Compounded +$2.08 overnight ✨”
+
+Empty state
+	•	“No deposits yet. Your focus is worth more than you think—start one now.”
+	•	Button: Start Manifest (primary)
+
+⸻
+
+5) Settings
+
+Sections
+	•	Themes: Galaxy / Minimal / Ocean / Neon Glow
+	•	Changes background gradient + particle speed.
+	•	Music Packs: Lo-Fi Focus / 528 Hz / Rain + Waves / (Guided Voice later)
+	•	Session Options:
+	•	Earn rate (fixed): $0.05 / sec (read-only in v1)
+	•	Auto-Deposit on Exit: toggle (off by default)
+	•	Quote Speed: 10s / 15s / 30s
+	•	Data
+	•	Reset Bank (confirm twice)
+	•	Export History (CSV, later)
+
+⸻
+
+6) Animations & Motion
+	•	Background:
+	•	Gradient: top #0A0D2A → bottom #1A1E3E
+	•	Slow (45–60s) gradient drift at 5% variance.
+	•	Particles:
+	•	Gold dots at 10% opacity, float upward at 0.2–0.5px/s, random ease.
+	•	Counter tick:
+	•	Smooth tween every 1s (easeOutQuad).
+	•	Deposit:
+	•	Counter digits “coin-drop” to zero; bank total shimmers once.
+
+⸻
+
+7) Audio
+	•	Defaults:
+	•	Lo-Fi Focus: 60–70 BPM, soft vinyl hiss, no vocals.
+	•	528 Hz Tone: pad underlay at low volume, −18 dB.
+	•	Waves: gentle pink noise + distant shore.
+	•	Volume: keep music −12 to −16 LUFS; UI sounds very subtle.
+	•	UI sounds:
+	•	Play/Pause: tiny chime
+	•	Deposit: soft “ka-ching” bell (tasteful, short)
+
+⸻
+
+8) Logic & States
+
+Session State Machine
+	•	idle → (Play) → running
+	•	running → (Pause) → paused
+	•	paused → (Play) → running
+	•	running|paused → (Deposit) → depositing → idle
+
+Counters & Rates
+	•	Default Earn Rate: $0.05 / sec
+	•	Tick: every 1000 ms; accumulate amount += rate
+	•	Precision: store cents as integers (e.g., 5 = $0.05) to avoid float errors
+	•	Auto-pause: if app backgrounded > 5s (v1 safety)
+
+Deposit
+	•	Add sessionAmount to bankTotal
+	•	Push history item: {amount, durationSec, label, timestamp}
+	•	Reset sessionAmount to 0; stop music; toasts success
+
+Early Exit Prompt (optional)
+	•	If user navigates away with sessionAmount > 0:
+“Leave without depositing? You’ll lose today’s gains.”
+Actions: Deposit Now / Discard
+
+⸻
+
+9) Data Model (simple)
+
+{
+  "bankTotalCents": 461298,
+  "history": [
+    {
+      "id": "hx_001",
+      "amountCents": 3321,
+      "durationSec": 360,
+      "label": "Morning Focus",
+      "timestamp": 1731033720000
+    }
+  ],
+  "preferences": {
+    "theme": "Galaxy",
+    "music": "LoFi",
+    "quoteIntervalSec": 15,
+    "autoDepositOnExit": false
+  },
+  "favorites": ["Wealth flows where focus goes."]
+}
+
+
+⸻
+
+10) Accessibility & Haptics
+	•	Contrast: Gold text on Night Sky ≥ 4.5:1; add subtle text stroke if needed.
+	•	Dynamic type: Respect OS font scaling up to 120%.
+	•	Haptics:
+	•	Play/Pause: light tap
+	•	Deposit: success haptic (medium)
+	•	VoiceOver labels: “Deposit, button. Adds your current focus amount to your bank.”
+
+⸻
+
+11) Copy & Micro-moments
+
+Onboarding line:
+“Read. Breathe. Build your balance.”
+
+Empty Bank nudge:
+“Every minute focused is a dollar you keep—start your first deposit.”
+
+Streak toast:
+“7 days straight—momentum loves consistency.”
+
+Deposit toast:
+“Banked $12.35. Your future self says thanks.”
+
+⸻
+
+12) Themes (visual presets)
+
+Galaxy (default):
+	•	BG gradient: #0A0D2A → #1A1E3E
+	•	Particles: gold + lavender
+	•	Counter glow: Aurora Purple
+
+Ocean:
+	•	BG: #06182E → #0B2C3A
+	•	Accent: teal #00B3B3
+	•	Particles: soft aqua
+
+Neon Glow:
+	•	BG: #0A0D2A → #2A0A26
+	•	Accent: magenta #FF3BCD
+	•	Particles: pink-gold
+
+Minimal:
+	•	BG: near-black #0B0B0F
+	•	Counter: white
+	•	Accents: muted gold
+
+⸻
+
+13) Guardrails (so v1 stays simple)
+	•	No accounts, no cloud sync, no ads.
+	•	Everything works offline.
+	•	“Interest” and “Streaks” are visual nudges, not math that pressures the user.
+
+⸻
+
+14) Example Session Defaults
+	•	Quote cycle: 15s
+	•	Earn rate: $0.05/s
+	•	Play from last music pack
+	•	Auto-pause on background
+	•	Auto-deposit: off
+
+⸻
+
+If you want, I can turn this into a readme.md or a product spec PDF with the palette chips and button states laid out. Or I can spin you a second screen (Bank) mock in code next so you’ve got both ends wired up.
