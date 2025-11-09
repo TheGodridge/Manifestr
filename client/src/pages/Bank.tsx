@@ -98,16 +98,6 @@ export default function Bank() {
       {/* Bottom Navigation Bar */}
       <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm mt-auto">
         <div className="max-w-md mx-auto flex items-center justify-center gap-3 py-4 px-5">
-          {/* Manifest Button */}
-          <Button
-            onClick={() => setLocation("/")}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
-            data-testid="button-manifest"
-          >
-            <TrendingDown className="w-4 h-4" />
-            <span className="ml-2">Manifest</span>
-          </Button>
-
           {/* About Button */}
           <Button
             onClick={() => setShowInfoModal(true)}
@@ -116,6 +106,16 @@ export default function Bank() {
           >
             <Info className="w-4 h-4" />
             <span className="ml-2">About</span>
+          </Button>
+
+          {/* Manifest Button */}
+          <Button
+            onClick={() => setLocation("/")}
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
+            data-testid="button-manifest"
+          >
+            <TrendingDown className="w-4 h-4" />
+            <span className="ml-2">Manifest</span>
           </Button>
 
           {/* Settings Button */}

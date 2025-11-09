@@ -360,8 +360,21 @@ export default function Manifest() {
     <div className="relative h-screen overflow-hidden flex flex-col">
       <ThemeBackground theme={appState.preferences.theme} />
       
+      {/* App Title */}
+      <div className="flex-none pt-6 pb-2 flex justify-center">
+        <h1 
+          className="text-3xl font-bold tracking-wide text-theme-cta"
+          style={{
+            textShadow: "0 0 20px hsl(var(--color-glow) / 0.4)",
+          }}
+          data-testid="app-title"
+        >
+          Manifestr
+        </h1>
+      </div>
+      
       {/* Main Content - Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5 pt-8">
+      <div className="flex-1 flex flex-col items-center justify-center px-5">
         {/* Affirmation - Responsive text that shrinks to fit */}
         <div className="mb-6 max-w-2xl w-full px-4 min-h-[60px] flex items-center justify-center">
           <p 
@@ -433,16 +446,6 @@ export default function Manifest() {
       {/* Bottom Navigation Bar */}
       <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm">
         <div className="max-w-md mx-auto flex items-center justify-center gap-3 py-4 px-5">
-          {/* Bank Button */}
-          <Button
-            onClick={() => setLocation("/bank")}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
-            data-testid="button-bank"
-          >
-            <TrendingUp className="w-4 h-4" />
-            <span className="ml-2">History</span>
-          </Button>
-
           {/* About Button */}
           <Button
             onClick={() => setShowInfoModal(true)}
@@ -453,11 +456,21 @@ export default function Manifest() {
             <span className="ml-2">About</span>
           </Button>
 
+          {/* History Button */}
+          <Button
+            onClick={() => setLocation("/bank")}
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
+            data-testid="button-bank"
+          >
+            <TrendingUp className="w-4 h-4" />
+            <span className="ml-2">History</span>
+          </Button>
+
           {/* Settings Button */}
           <Button
             onClick={() => setLocation("/settings")}
             className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
-            data-testid="button-settings"
+            data-testid="button-settings-bottom"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />

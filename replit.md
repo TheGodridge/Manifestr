@@ -169,9 +169,11 @@ Preferred communication style: Simple, everyday language.
 - Cosmic-themed styling matching app aesthetic
 
 **Navigation Structure**:
-- Manifest page bottom nav: History | About | Settings
-- Bank page bottom nav: Manifest | About | Settings
+- App title "Manifestr" displayed at top of Manifest page in CTA color with glow effect
+- Manifest page bottom nav: About | History | Settings
+- Bank page bottom nav: About | Manifest | Settings
 - Settings page: Back to Manifest button at top
+- Navigation buttons: 44px height, 12px gaps, centered layout
 
 ### External Dependencies
 
