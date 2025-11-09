@@ -108,6 +108,7 @@ Preferred communication style: Simple, everyday language.
   - Track files imported from `attached_assets/` via @assets alias
 - **Crossfading**: Dual GainNode approach with 750ms smooth transitions between tracks
 - **Volume Control**: Master GainNode (0-100%) with smooth ramping transitions
+- **Safari/iOS Support**: Explicit AudioContext.resume() on user interaction to handle autoplay restrictions
 - **Migration**: Backward compatibility logic maps old procedural pack names to new MP3 tracks
 - AudioContext management with proper initialization, suspend/resume, and cleanup
 

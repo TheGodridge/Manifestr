@@ -361,9 +361,9 @@ export default function Manifest() {
       <ThemeBackground theme={appState.preferences.theme} />
       
       {/* Main Content - Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5">
+      <div className="flex-1 flex flex-col items-center justify-center px-5 pt-8">
         {/* Affirmation - Responsive text that shrinks to fit */}
-        <div className="mb-8 max-w-2xl w-full px-4 min-h-[80px] flex items-center justify-center">
+        <div className="mb-6 max-w-2xl w-full px-4 min-h-[60px] flex items-center justify-center">
           <p 
             className="text-center text-theme-text-secondary font-inter font-medium leading-relaxed"
             style={{
@@ -378,12 +378,12 @@ export default function Manifest() {
         </div>
 
         {/* Separator */}
-        <div className="w-full max-w-2xl mb-8 flex items-center justify-center">
+        <div className="w-full max-w-2xl mb-6 flex items-center justify-center">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-theme-separator/40 to-transparent" />
         </div>
 
         {/* Counter - Centered in fixed-width container */}
-        <div className="relative mb-6 w-full max-w-2xl flex justify-center">
+        <div className="relative mb-5 w-full max-w-2xl flex justify-center">
           {/* Radial glow effect */}
           <div
             className="absolute inset-0 blur-3xl opacity-30"
@@ -401,7 +401,7 @@ export default function Manifest() {
 
         {/* Focus Multiplier Progress Bar */}
         {sessionState === "running" && (
-          <div className="mb-6 w-full max-w-2xl">
+          <div className="mb-5 w-full max-w-2xl">
             <FocusMultiplierBar multiplier={currentMultiplier} />
           </div>
         )}
@@ -432,34 +432,34 @@ export default function Manifest() {
 
       {/* Bottom Navigation Bar */}
       <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm">
-        <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
+        <div className="max-w-md mx-auto flex items-center justify-center gap-3 py-4 px-5">
           {/* Bank Button */}
           <Button
             onClick={() => setLocation("/bank")}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
             data-testid="button-bank"
           >
-            <TrendingUp className="w-5 h-5" />
+            <TrendingUp className="w-4 h-4" />
             <span className="ml-2">History</span>
           </Button>
 
           {/* About Button */}
           <Button
             onClick={() => setShowInfoModal(true)}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
             data-testid="button-about"
           >
-            <Info className="w-5 h-5" />
+            <Info className="w-4 h-4" />
             <span className="ml-2">About</span>
           </Button>
 
           {/* Settings Button */}
           <Button
             onClick={() => setLocation("/settings")}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
             data-testid="button-settings"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>

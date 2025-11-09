@@ -97,34 +97,34 @@ export default function Bank() {
 
       {/* Bottom Navigation Bar */}
       <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm mt-auto">
-        <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
+        <div className="max-w-md mx-auto flex items-center justify-center gap-3 py-4 px-5">
           {/* Manifest Button */}
           <Button
             onClick={() => setLocation("/")}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
             data-testid="button-manifest"
           >
-            <TrendingDown className="w-5 h-5" />
+            <TrendingDown className="w-4 h-4" />
             <span className="ml-2">Manifest</span>
           </Button>
 
           {/* About Button */}
           <Button
             onClick={() => setShowInfoModal(true)}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
             data-testid="button-about"
           >
-            <Info className="w-5 h-5" />
+            <Info className="w-4 h-4" />
             <span className="ml-2">About</span>
           </Button>
 
           {/* Settings Button */}
           <Button
             onClick={() => setLocation("/settings")}
-            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[44px] px-5 rounded-xl"
             data-testid="button-settings-bottom"
           >
-            <Settings className="w-5 h-5" />
+            <Settings className="w-4 h-4" />
             <span className="ml-2">Settings</span>
           </Button>
         </div>

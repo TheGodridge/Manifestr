@@ -96,9 +96,14 @@ class AudioService {
       this.masterGain.gain.value = (this.volume / 100);
     }
 
-    // Ensure AudioContext is running
+    // Safari/iOS requires user interaction to unlock audio - force resume
     if (this.audioContext.state === "suspended") {
-      await this.audioContext.resume();
+      try {
+        await this.audioContext.resume();
+        console.log("AudioContext resumed successfully");
+      } catch (error) {
+        console.error("Failed to resume AudioContext:", error);
+      }
     }
 
     // If already playing the same pack, just resume if needed
