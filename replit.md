@@ -35,12 +35,24 @@ Preferred communication style: Simple, everyday language.
 - `DepositModal`: Confirmation dialog for banking earnings
 
 **Design System**:
-- Custom cosmic/ambient color palette (Night Sky #0A0D2A, Aurora Purple #3B0A66, Gold #F8D94E)
-- Four theme variations: Galaxy (default), Ocean, Neon Glow, Minimal
+- **Semantic Color Token System**: Uses CSS variables for dynamic theme switching
+  - Tokens defined per theme in `index.css` using `:root[data-theme="ThemeName"]` selectors
+  - Semantic tokens: `--color-accent`, `--color-cta`, `--color-text-secondary`, `--color-separator`, `--color-nav-bg`, `--color-nav-text`, `--color-glow`
+  - Exposed as Tailwind utilities: `bg-theme-cta`, `text-theme-text-secondary`, `border-theme-separator`, etc.
+- **Theme Variations**: Four instant-switching themes
+  - Galaxy (default): Gold CTA (#F8D94E), purple background, lavender text
+  - Ocean: Teal CTA (#00B3B3), blue-teal background, light teal text
+  - Neon Glow: Magenta CTA (#FF3BCD), purple-magenta background, pink text
+  - Minimal: White CTA (#FFFFFF), dark gray background, soft white text
+- **Theme Switching Implementation**:
+  - `useLayoutEffect` in `App.tsx` syncs `document.documentElement.dataset.theme` before paint
+  - `handleThemeChange` in `Settings.tsx` directly updates data-theme attribute for instant application
+  - Zero-reload theme transitions across all pages
 - Typography using Inter/Poppins fonts
 - Spacing based on Tailwind scale (2, 3, 5, 8, 12, 16, 20, 32, 48)
 - Custom animations: gradient drift background (15s cycle), shimmer sweep, coin-drop bounce, micro-interactions on buttons
 - All animations respect `prefers-reduced-motion` user preference
+- **Counter Display**: Fixed-width container with `tabular-nums` (monospaced digits) and `text-center` to prevent shifting as numbers change
 
 ### Backend Architecture
 
