@@ -159,14 +159,18 @@ Preferred communication style: Simple, everyday language.
 - Full app reset with confirmation dialog
 
 **Info Modal**:
-- Floating question mark button in bottom-right corner of all pages
-- Fixed positioning (96px from bottom) to avoid overlapping navigation
+- "About" button in bottom navigation bar on all pages (third button, evenly spaced)
 - Opens modal with three sections:
   - Legal Notice: Clarifies virtual currency has no monetary value
-  - Copyright: Dynamic year display
+  - Copyright: © 2025 Ridge Mallery. All rights reserved.
   - Developer Notes: Philosophy, audio details, design inspiration, technology stack
 - Full accessibility support with aria-label and DialogDescription
 - Cosmic-themed styling matching app aesthetic
+
+**Navigation Structure**:
+- Manifest page bottom nav: History | About | Settings
+- Bank page bottom nav: Manifest | About | Settings
+- Settings page: Back to Manifest button at top
 
 ### External Dependencies
 

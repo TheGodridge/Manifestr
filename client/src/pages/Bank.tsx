@@ -1,14 +1,16 @@
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { InfoModal } from "@/components/InfoModal";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { formatCents, formatDuration, formatTimestamp } from "@/lib/formatCurrency";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingDown, Settings, Info } from "lucide-react";
 
 export default function Bank() {
   const [, setLocation] = useLocation();
   const [appState] = useAppState();
+  const [showInfoModal, setShowInfoModal] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -93,20 +95,42 @@ export default function Bank() {
         </div>
       </div>
 
-      {/* Footer Widgets (placeholder for future features) */}
-      {appState.history.length > 0 && (
-        <div className="flex-none px-5 pb-4">
-          <div className="max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
-            <div className="bg-aurora-purple/20 border border-pulse-purple/30 rounded-xl px-4 py-2">
-              <p className="text-gold-soft text-sm font-medium">
-                {appState.history.length} deposit{appState.history.length !== 1 ? "s" : ""}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Bottom Navigation Bar */}
+      <div className="flex-none border-t border-theme-separator/20 bg-black/50 backdrop-blur-sm mt-auto">
+        <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
+          {/* Manifest Button */}
+          <Button
+            onClick={() => setLocation("/")}
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            data-testid="button-manifest"
+          >
+            <TrendingDown className="w-5 h-5" />
+            <span className="ml-2">Manifest</span>
+          </Button>
 
-      <InfoModal />
+          {/* About Button */}
+          <Button
+            onClick={() => setShowInfoModal(true)}
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            data-testid="button-about"
+          >
+            <Info className="w-5 h-5" />
+            <span className="ml-2">About</span>
+          </Button>
+
+          {/* Settings Button */}
+          <Button
+            onClick={() => setLocation("/settings")}
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            data-testid="button-settings-bottom"
+          >
+            <Settings className="w-5 h-5" />
+            <span className="ml-2">Settings</span>
+          </Button>
+        </div>
+      </div>
+
+      <InfoModal open={showInfoModal} onOpenChange={setShowInfoModal} />
     </div>
   );
 }

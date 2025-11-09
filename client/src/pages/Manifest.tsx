@@ -9,7 +9,7 @@ import { ThemeBackground } from "@/components/ThemeBackground";
 import { InfoModal } from "@/components/InfoModal";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { DIFFICULTY_CONFIGS, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
-import { Headphones, DollarSign, TrendingUp } from "lucide-react";
+import { Headphones, DollarSign, TrendingUp, Info } from "lucide-react";
 import { formatDuration } from "@/lib/formatCurrency";
 import { audioService } from "@/lib/audioService";
 
@@ -23,6 +23,7 @@ export default function Manifest() {
   const [focusedSeconds, setFocusedSeconds] = useState(0);
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
   const [currentMultiplier, setCurrentMultiplier] = useState(1);
   
@@ -442,6 +443,16 @@ export default function Manifest() {
             <span className="ml-2">History</span>
           </Button>
 
+          {/* About Button */}
+          <Button
+            onClick={() => setShowInfoModal(true)}
+            className="micro-interact bg-theme-nav-bg text-theme-nav-text border border-theme-separator/20 hover-elevate h-[50px] px-6 rounded-xl"
+            data-testid="button-about"
+          >
+            <Info className="w-5 h-5" />
+            <span className="ml-2">About</span>
+          </Button>
+
           {/* Settings Button */}
           <Button
             onClick={() => setLocation("/settings")}
@@ -464,7 +475,7 @@ export default function Manifest() {
         onConfirm={confirmDeposit}
       />
 
-      <InfoModal />
+      <InfoModal open={showInfoModal} onOpenChange={setShowInfoModal} />
     </div>
   );
 }

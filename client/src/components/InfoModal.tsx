@@ -6,37 +6,24 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { HelpCircle } from "lucide-react";
-import { useState } from "react";
 
-export function InfoModal() {
-  const [open, setOpen] = useState(false);
+interface InfoModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
+export function InfoModal({ open, onOpenChange }: InfoModalProps) {
   return (
-    <>
-      {/* Floating Question Mark Button */}
-      <Button
-        onClick={() => setOpen(true)}
-        size="icon"
-        variant="ghost"
-        className="fixed bottom-24 right-5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-theme-separator/30 text-theme-text-secondary hover:text-theme-cta transition-all z-50"
-        aria-label="About Manifestr"
-        data-testid="button-info"
-      >
-        <HelpCircle className="w-5 h-5" />
-      </Button>
-
-      {/* Info Modal */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto bg-night-sky/95 backdrop-blur-xl border-pulse-purple/30">
-          <DialogHeader>
-            <DialogTitle className="text-gold-primary font-poppins text-2xl">
-              About Manifestr
-            </DialogTitle>
-            <DialogDescription className="sr-only">
-              Legal notice, copyright information, and developer notes about Manifestr meditation app
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto bg-night-sky/95 backdrop-blur-xl border-pulse-purple/30">
+        <DialogHeader>
+          <DialogTitle className="text-gold-primary font-poppins text-2xl">
+            About Manifestr
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Legal notice, copyright information, and developer notes about Manifestr meditation app
+          </DialogDescription>
+        </DialogHeader>
 
           <div className="space-y-6 text-mist-lavender">
             {/* Legal Notice */}
@@ -57,7 +44,7 @@ export function InfoModal() {
                 Copyright
               </h3>
               <p className="text-sm leading-relaxed">
-                © {new Date().getFullYear()} Manifestr. All rights reserved.
+                © {new Date().getFullYear()} Ridge Mallery. All rights reserved.
               </p>
             </div>
 
@@ -88,7 +75,7 @@ export function InfoModal() {
 
             {/* Close Button */}
             <Button
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               className="w-full bg-theme-cta text-theme-cta-text hover:bg-theme-cta-hover h-[48px] rounded-xl font-medium"
               data-testid="button-close-info"
             >
@@ -97,6 +84,5 @@ export function InfoModal() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
   );
 }
