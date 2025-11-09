@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { DepositModal } from "@/components/DepositModal";
-import { FireChip } from "@/components/FireChip";
 import { FocusMultiplierBar } from "@/components/FocusMultiplierBar";
+import { ThemeBackground } from "@/components/ThemeBackground";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { EARN_RATE_CENTS_PER_SEC, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
 import { Headphones, DollarSign, TrendingUp } from "lucide-react";
@@ -323,12 +323,9 @@ export default function Manifest() {
 
 
   return (
-    <div 
-      className="relative h-screen overflow-hidden flex flex-col animate-gradient-drift"
-      style={{
-        background: "linear-gradient(135deg, #0A0D2A 0%, #1a0d3d 25%, #0A0D2A 50%, #1a1040 75%, #0A0D2A 100%)",
-      }}
-    >
+    <div className="relative h-screen overflow-hidden flex flex-col">
+      <ThemeBackground theme={appState.preferences.theme} />
+      
       {/* Main Content - Centered */}
       <div className="flex-1 flex flex-col items-center justify-center px-5">
         {/* Affirmation */}
@@ -344,19 +341,19 @@ export default function Manifest() {
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-pulse-purple/40 to-transparent" />
         </div>
 
-        {/* Counter - Left-aligned to prevent shifting */}
-        <div className="relative mb-6 w-full max-w-2xl">
+        {/* Counter - Centered in fixed-width container */}
+        <div className="relative mb-6 w-full max-w-2xl flex justify-center">
           {/* Radial glow effect */}
           <div
-            className="absolute left-0 top-0 blur-3xl opacity-30 w-full h-full"
+            className="absolute inset-0 blur-3xl opacity-30"
             style={{
-              background: "radial-gradient(circle at left center, rgba(59, 10, 102, 0.6) 0%, transparent 70%)",
+              background: "radial-gradient(circle at center, rgba(59, 10, 102, 0.6) 0%, transparent 70%)",
             }}
           />
           
           <AnimatedCounter
             value={sessionCents}
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl relative z-10 text-left"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl relative z-10 text-center tabular-nums"
             isDepositing={isDepositing}
           />
         </div>
