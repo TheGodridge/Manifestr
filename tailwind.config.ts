@@ -11,6 +11,28 @@ export default {
         sm: ".1875rem", /* 3px */
       },
       colors: {
+        // Manifestr Cosmic Palette
+        "night-sky": "#0A0D2A",
+        "night-sky-deep": "#1A1E3E",
+        "aurora-purple": "#3B0A66",
+        "pulse-purple": "#5C318F",
+        "gold-primary": "#F8D94E",
+        "gold-soft": "#EBD46A",
+        "gold-pressed": "#E0C546",
+        "mist-lavender": "#C7BAF0",
+        
+        // Ocean theme
+        "ocean-deep": "#06182E",
+        "ocean-mid": "#0B2C3A",
+        "ocean-teal": "#00B3B3",
+        
+        // Neon Glow theme
+        "neon-dark": "#2A0A26",
+        "neon-magenta": "#FF3BCD",
+        
+        // Minimal theme
+        "minimal-black": "#0B0B0F",
+        
         // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
@@ -86,6 +108,15 @@ export default {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
+        poppins: ["Poppins", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+      },
+      fontSize: {
+        'counter-mobile': ['64px', { lineHeight: '1.1', fontWeight: '700' }],
+        'counter-tablet': ['96px', { lineHeight: '1.1', fontWeight: '700' }],
+      },
+      letterSpacing: {
+        'cta': '0.02em',
       },
       keyframes: {
         "accordion-down": {
@@ -96,10 +127,27 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "float-up": {
+          "0%": { transform: "translateY(0px)", opacity: "0.1" },
+          "50%": { opacity: "0.1" },
+          "100%": { transform: "translateY(-100vh)", opacity: "0" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-1000px 0" },
+          "100%": { backgroundPosition: "1000px 0" },
+        },
+        "coin-drop": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(0.8)", opacity: "0.5" },
+          "100%": { transform: "scale(0)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float-up": "float-up linear infinite",
+        "shimmer": "shimmer 2s linear infinite",
+        "coin-drop": "coin-drop 0.6s ease-out forwards",
       },
     },
   },
