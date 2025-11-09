@@ -19,6 +19,10 @@ export type Theme = z.infer<typeof themeSchema>;
 export const musicPackSchema = z.enum(["Theta Waves", "Ocean Meditation", "Forest Ambience"]);
 export type MusicPack = z.infer<typeof musicPackSchema>;
 
+// Focus level (difficulty) options
+export const focusLevelSchema = z.enum(["Novice", "Intermediate", "Advanced", "Expert"]);
+export type FocusLevel = z.infer<typeof focusLevelSchema>;
+
 // Preferences
 export const preferencesSchema = z.object({
   theme: themeSchema,
@@ -26,6 +30,7 @@ export const preferencesSchema = z.object({
   quoteIntervalSec: z.number().int().positive(),
   autoDepositOnExit: z.boolean(),
   volume: z.number().min(0).max(100),
+  focusLevel: focusLevelSchema,
 });
 
 export type Preferences = z.infer<typeof preferencesSchema>;
@@ -54,6 +59,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   quoteIntervalSec: 15,
   autoDepositOnExit: false,
   volume: 50,
+  focusLevel: "Intermediate",
 };
 
 export const DEFAULT_APP_STATE: AppState = {
@@ -172,5 +178,41 @@ export const STARTER_QUOTES = [
   "Every moment I invest in myself pays dividends I cannot yet imagine.",
 ];
 
-// Earn rate constant
-export const EARN_RATE_CENTS_PER_SEC = 5; // $0.05/sec
+// Difficulty configurations
+// Novice: Fast earnings, reaches max quickly (good for beginners)
+// Intermediate: Balanced progression
+// Advanced: Slower, encourages 10-minute sessions
+// Expert: Slowest, encourages 15-20 minute deep meditation sessions
+export interface DifficultyConfig {
+  baseRateCentsPerSec: number;  // Base earning rate
+  growthFactor: number;          // Exponential growth factor
+  growthIntervalSec: number;     // How often growth is applied
+  maxMultiplier: number;         // Maximum multiplier cap
+}
+
+export const DIFFICULTY_CONFIGS: Record<FocusLevel, DifficultyConfig> = {
+  "Novice": {
+    baseRateCentsPerSec: 8,      // $0.08/sec (fastest)
+    growthFactor: 1.025,         // 2.5% growth
+    growthIntervalSec: 20,       // Every 20 seconds
+    maxMultiplier: 2.5,          // Caps at 2.5x around 5 minutes
+  },
+  "Intermediate": {
+    baseRateCentsPerSec: 5,      // $0.05/sec (current default)
+    growthFactor: 1.02,          // 2% growth
+    growthIntervalSec: 30,       // Every 30 seconds
+    maxMultiplier: 3.5,          // Caps at 3.5x around 10 minutes
+  },
+  "Advanced": {
+    baseRateCentsPerSec: 3,      // $0.03/sec (slower)
+    growthFactor: 1.018,         // 1.8% growth
+    growthIntervalSec: 35,       // Every 35 seconds
+    maxMultiplier: 4.5,          // Caps at 4.5x around 15 minutes
+  },
+  "Expert": {
+    baseRateCentsPerSec: 2,      // $0.02/sec (slowest, most challenging)
+    growthFactor: 1.015,         // 1.5% growth
+    growthIntervalSec: 40,       // Every 40 seconds
+    maxMultiplier: 5.0,          // Caps at 5.0x around 20 minutes
+  },
+};

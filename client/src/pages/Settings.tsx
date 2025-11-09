@@ -252,14 +252,50 @@ export default function Settings() {
             </h2>
             <div className="space-y-6">
               <div className="space-y-3">
-                <Label className="text-mist-lavender">
-                  Earn Rate
+                <Label htmlFor="difficulty-slider" className="text-mist-lavender">
+                  Focus Difficulty
                 </Label>
-                <p className="text-gold-soft font-mono text-lg">
-                  $0.05 / second
-                </p>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gold-soft font-medium text-lg">
+                    {appState.preferences.focusLevel}
+                  </span>
+                  <span className="text-mist-lavender/70 text-sm">
+                    {appState.preferences.focusLevel === "Novice" && "Fast progression"}
+                    {appState.preferences.focusLevel === "Intermediate" && "Balanced pace"}
+                    {appState.preferences.focusLevel === "Advanced" && "Slower, deeper"}
+                    {appState.preferences.focusLevel === "Expert" && "Most challenging"}
+                  </span>
+                </div>
+                <Slider
+                  id="difficulty-slider"
+                  min={0}
+                  max={3}
+                  step={1}
+                  value={[["Novice", "Intermediate", "Advanced", "Expert"].indexOf(appState.preferences.focusLevel)]}
+                  onValueChange={(value) => {
+                    const levels: ("Novice" | "Intermediate" | "Advanced" | "Expert")[] = ["Novice", "Intermediate", "Advanced", "Expert"];
+                    setAppState({
+                      ...appState,
+                      preferences: {
+                        ...appState.preferences,
+                        focusLevel: levels[value[0]],
+                      },
+                    });
+                  }}
+                  className="cursor-pointer"
+                  data-testid="slider-difficulty"
+                />
+                <div className="flex justify-between text-xs text-mist-lavender/50 mt-1">
+                  <span>Novice</span>
+                  <span>Intermediate</span>
+                  <span>Advanced</span>
+                  <span>Expert</span>
+                </div>
                 <p className="text-mist-lavender/70 text-sm">
-                  Fixed rate for v1
+                  {appState.preferences.focusLevel === "Novice" && "Faster earnings - perfect for beginners"}
+                  {appState.preferences.focusLevel === "Intermediate" && "Balanced progression - encourages 10 min sessions"}
+                  {appState.preferences.focusLevel === "Advanced" && "Slower earnings - rewards 15 min sessions"}
+                  {appState.preferences.focusLevel === "Expert" && "Slowest earnings - mastery through 20+ min sessions"}
                 </p>
               </div>
 

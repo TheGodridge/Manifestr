@@ -7,7 +7,7 @@ import { DepositModal } from "@/components/DepositModal";
 import { FocusMultiplierBar } from "@/components/FocusMultiplierBar";
 import { ThemeBackground } from "@/components/ThemeBackground";
 import { useAppState } from "@/hooks/useLocalStorage";
-import { EARN_RATE_CENTS_PER_SEC, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
+import { DIFFICULTY_CONFIGS, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
 import { Headphones, DollarSign, TrendingUp } from "lucide-react";
 import { formatDuration } from "@/lib/formatCurrency";
 import { audioService } from "@/lib/audioService";
@@ -45,13 +45,11 @@ export default function Manifest() {
     [appState.customQuotes]
   );
 
-  // Calculate exponential multiplier based on session duration
+  // Calculate exponential multiplier based on session duration and difficulty
   const calculateMultiplier = (seconds: number): number => {
-    // Exponential growth: 2% increase every 30 seconds
-    // Formula: multiplier = 1.02^(seconds/30)
-    // Reaches ~1.14x at 5 min, ~1.31x at 10 min, caps at 4x around 20 min
-    const rawMultiplier = Math.pow(1.02, seconds / 30);
-    return Math.min(rawMultiplier, 4);
+    const config = DIFFICULTY_CONFIGS[appState.preferences.focusLevel];
+    const rawMultiplier = Math.pow(config.growthFactor, seconds / config.growthIntervalSec);
+    return Math.min(rawMultiplier, config.maxMultiplier);
   };
 
   // Quote rotation
@@ -173,9 +171,10 @@ export default function Manifest() {
         setFocusedSeconds((prev) => {
           const nextSeconds = prev + 1;
           const multiplier = calculateMultiplier(nextSeconds);
+          const config = DIFFICULTY_CONFIGS[appState.preferences.focusLevel];
           
           // Calculate exact earnings with fractional cents
-          const exactEarnings = EARN_RATE_CENTS_PER_SEC * multiplier;
+          const exactEarnings = config.baseRateCentsPerSec * multiplier;
           const totalWithFraction = fractionalCentsRef.current + exactEarnings;
           
           // Extract whole cents and keep remainder
