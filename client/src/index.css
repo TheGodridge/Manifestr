@@ -285,4 +285,106 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* Manifestr Animation Polish */
+  
+  /* Coin-drop animation for deposits */
+  @keyframes coin-drop {
+    0% {
+      transform: translateY(-100px) scale(0.5);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    70% {
+      transform: translateY(10px) scale(1.1);
+    }
+    85% {
+      transform: translateY(-5px) scale(0.95);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-coin-drop {
+    animation: coin-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Shimmer sweep for bank total */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Gradient drift for cosmic backgrounds */
+  @keyframes gradient-drift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient-drift {
+    background-size: 200% 200%;
+    animation: gradient-drift 15s ease infinite;
+  }
+
+  /* Pulse animation for Fire chip */
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Micro-interaction: subtle scale on buttons */
+  .micro-interact {
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+
+  .micro-interact:hover {
+    transform: scale(1.02);
+  }
+
+  .micro-interact:active {
+    transform: scale(0.98);
+  }
+
+  /* Prefers-reduced-motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-coin-drop,
+    .animate-shimmer,
+    .animate-gradient-drift,
+    .animate-pulse-glow {
+      animation: none !important;
+    }
+
+    .micro-interact {
+      transform: none !important;
+    }
+  }
 }

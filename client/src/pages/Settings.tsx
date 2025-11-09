@@ -144,7 +144,7 @@ export default function Settings() {
         <Button
           variant="ghost"
           onClick={() => setLocation("/")}
-          className="mb-6 text-mist-lavender hover:text-gold-primary -ml-2"
+          className="micro-interact mb-6 text-mist-lavender hover:text-gold-primary -ml-2"
           data-testid="button-back"
         >
           <ChevronLeft className="w-5 h-5 mr-1" />
@@ -384,7 +384,7 @@ export default function Settings() {
                 />
                 <Button
                   onClick={handleAddCustomQuote}
-                  className="bg-gold-primary text-night-sky hover:bg-gold-soft flex-shrink-0"
+                  className="micro-interact bg-gold-primary text-night-sky hover:bg-gold-soft flex-shrink-0"
                   data-testid="button-add-custom-quote"
                 >
                   <Plus className="w-4 h-4" />
@@ -406,7 +406,7 @@ export default function Settings() {
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="destructive"
-                    className="w-full"
+                    className="micro-interact w-full"
                     data-testid="button-reset-bank"
                   >
                     Reset Bank

@@ -32,7 +32,7 @@ export function DepositModal({ open, onOpenChange, amount, onConfirm }: DepositM
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="bg-aurora-purple text-gold-primary border-pulse-purple/20 hover:bg-pulse-purple h-[50px] rounded-xl"
+            className="micro-interact bg-aurora-purple text-gold-primary border-pulse-purple/20 hover:bg-pulse-purple h-[50px] rounded-xl"
             data-testid="button-keep-going"
           >
             Keep Going
@@ -42,7 +42,7 @@ export function DepositModal({ open, onOpenChange, amount, onConfirm }: DepositM
               onConfirm();
               onOpenChange(false);
             }}
-            className="bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] rounded-[14px] font-medium tracking-cta"
+            className="micro-interact bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] rounded-[14px] font-medium tracking-cta"
             style={{
               boxShadow: "0 0 30px rgba(59, 10, 102, 0.3)",
             }}

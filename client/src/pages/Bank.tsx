@@ -17,7 +17,7 @@ export default function Bank() {
           <Button
             variant="ghost"
             onClick={() => setLocation("/")}
-            className="mb-6 text-mist-lavender hover:text-gold-primary -ml-2"
+            className="micro-interact mb-6 text-mist-lavender hover:text-gold-primary -ml-2"
             data-testid="button-back"
           >
             <ChevronLeft className="w-5 h-5 mr-1" />
@@ -57,7 +57,7 @@ export default function Bank() {
               </p>
               <Button
                 onClick={() => setLocation("/")}
-                className="bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
+                className="micro-interact bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
                 style={{
                   boxShadow: "0 0 30px rgba(59, 10, 102, 0.3)",
                 }}

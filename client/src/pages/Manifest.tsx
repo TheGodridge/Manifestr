@@ -7,7 +7,7 @@ import { DepositModal } from "@/components/DepositModal";
 import { FireChip } from "@/components/FireChip";
 import { useAppState } from "@/hooks/useLocalStorage";
 import { EARN_RATE_CENTS_PER_SEC, STARTER_QUOTES, SessionState, DepositHistory } from "@shared/schema";
-import { Headphones, DollarSign, TrendingUp, Star } from "lucide-react";
+import { Headphones, DollarSign, TrendingUp } from "lucide-react";
 import { formatDuration } from "@/lib/formatCurrency";
 import { audioService } from "@/lib/audioService";
 
@@ -292,56 +292,31 @@ export default function Manifest() {
     return "Evening Practice";
   };
 
-  const toggleFavorite = () => {
-    const currentQuote = allQuotes[currentQuoteIndex];
-    const isFavorited = appState.favorites.includes(currentQuote);
-    
-    if (isFavorited) {
-      setAppState({
-        ...appState,
-        favorites: appState.favorites.filter((q) => q !== currentQuote),
-      });
-    } else {
-      setAppState({
-        ...appState,
-        favorites: [...appState.favorites, currentQuote],
-      });
-    }
-  };
-
-  const isFavorited = appState.favorites.includes(allQuotes[currentQuoteIndex]);
 
   return (
-    <div className="relative h-screen overflow-hidden flex flex-col">
-      {/* Top Section - Affirmation */}
-      <div className="flex-none pt-12 px-5">
-        <div className="relative max-w-2xl mx-auto">
-          <p 
-            className="text-center text-mist-lavender text-lg sm:text-xl font-inter font-medium leading-relaxed min-h-[4rem] flex items-center justify-center px-8"
-            data-testid="affirmation-text"
-          >
-            {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
-          </p>
-          <button
-            onClick={toggleFavorite}
-            className="absolute right-0 top-1/2 -translate-y-1/2 p-2 hover-elevate active-elevate-2 rounded-md transition-transform"
-            data-testid="button-favorite"
-          >
-            <Star
-              className={`w-6 h-6 ${isFavorited ? "fill-gold-primary text-gold-primary" : "text-mist-lavender"}`}
-            />
-          </button>
-        </div>
-      </div>
-
-      {/* Center Section - Counter */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5 space-y-2">
+    <div 
+      className="relative h-screen overflow-hidden flex flex-col animate-gradient-drift"
+      style={{
+        background: "linear-gradient(135deg, #0A0D2A 0%, #1a0d3d 25%, #0A0D2A 50%, #1a1040 75%, #0A0D2A 100%)",
+      }}
+    >
+      {/* Main Content - Centered */}
+      <div className="flex-1 flex flex-col items-center justify-center px-5">
         {/* Streak Display */}
-        <div className="mb-4">
+        <div className="mb-6">
           <FireChip streak={appState.currentStreak} />
         </div>
 
-        <div className="relative">
+        {/* Affirmation */}
+        <p 
+          className="text-center text-mist-lavender text-lg sm:text-xl font-inter font-medium leading-relaxed mb-8 max-w-2xl"
+          data-testid="affirmation-text"
+        >
+          {allQuotes[currentQuoteIndex] || "Add a quote to begin."}
+        </p>
+
+        {/* Counter */}
+        <div className="relative mb-6">
           {/* Radial glow effect */}
           <div
             className="absolute inset-0 blur-3xl opacity-30"
@@ -357,49 +332,62 @@ export default function Manifest() {
           />
         </div>
         
-        <p className="text-mist-lavender text-sm sm:text-base font-inter mt-2" data-testid="subtext">
+        <p className="text-mist-lavender text-sm sm:text-base font-inter mb-8" data-testid="subtext">
           Stay present — your energy compounds.
         </p>
+
+        {/* Deposit Button */}
+        <Button
+          onClick={handleDeposit}
+          className="micro-interact bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] px-8 rounded-[14px] font-medium tracking-cta"
+          style={{
+            boxShadow: "0 0 30px rgba(59, 10, 102, 0.3)",
+          }}
+          data-testid="button-deposit"
+        >
+          <DollarSign className="w-5 h-5" />
+          <span className="ml-2">Deposit</span>
+        </Button>
       </div>
 
-      {/* Bottom Controls */}
-      <div className="flex-none pb-8 px-5">
-        <div className="max-w-md mx-auto flex items-center justify-center gap-3">
+      {/* Bottom Navigation Bar */}
+      <div className="flex-none border-t border-pulse-purple/20 bg-night-sky/50 backdrop-blur-sm">
+        <div className="max-w-md mx-auto flex items-center justify-around py-4 px-5">
           {/* Play/Pause Button */}
           <Button
             onClick={handlePlayPause}
-            className={`bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] w-[50px] sm:w-auto sm:px-6 rounded-xl transition-all ${
+            className={`micro-interact bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] px-6 rounded-xl transition-all ${
               sessionState === "running" ? "ring-2 ring-gold-primary/30" : ""
             }`}
             data-testid="button-play-pause"
           >
             <Headphones className={`w-5 h-5 ${sessionState === "running" ? "animate-pulse" : ""}`} />
-            <span className="hidden sm:inline ml-2">
+            <span className="ml-2">
               {sessionState === "running" ? "Pause" : sessionState === "paused" ? "Resume" : "Play"}
             </span>
-          </Button>
-
-          {/* Deposit Button */}
-          <Button
-            onClick={handleDeposit}
-            className="bg-gold-primary text-night-sky hover:bg-gold-pressed h-[54px] px-8 rounded-[14px] font-medium tracking-cta flex-1 sm:flex-initial"
-            style={{
-              boxShadow: "0 0 30px rgba(59, 10, 102, 0.3)",
-            }}
-            data-testid="button-deposit"
-          >
-            <DollarSign className="w-5 h-5" />
-            <span className="ml-2">Deposit</span>
           </Button>
 
           {/* Bank Button */}
           <Button
             onClick={() => setLocation("/bank")}
-            className="bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] w-[50px] sm:w-auto sm:px-6 rounded-xl"
+            className="micro-interact bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] px-6 rounded-xl"
             data-testid="button-bank"
           >
             <TrendingUp className="w-5 h-5" />
-            <span className="hidden sm:inline ml-2">Bank</span>
+            <span className="ml-2">History</span>
+          </Button>
+
+          {/* Settings Button */}
+          <Button
+            onClick={() => setLocation("/settings")}
+            className="micro-interact bg-aurora-purple text-gold-primary border border-pulse-purple/20 hover:bg-pulse-purple h-[50px] px-6 rounded-xl"
+            data-testid="button-settings"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="ml-2">Settings</span>
           </Button>
         </div>
       </div>
